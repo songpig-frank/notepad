@@ -182,6 +182,7 @@ function TaskListScreen() {
 
   return (
     <div className="container">
+      <Link to="/" className="back-button">← Back</Link>
       <h1 className="title">Task List</h1>
       <div className="task-container">
         <form onSubmit={addTask} className="task-form">
