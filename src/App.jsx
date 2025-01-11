@@ -1,6 +1,8 @@
 
 import React from 'react';
 import { BrowserRouter, Routes, Route, Link } from 'react-router-dom';
+import { db } from './firebase';
+import { collection, addDoc, getDocs, deleteDoc, doc, updateDoc } from 'firebase/firestore';
 import './App.css';
 
 function HomeScreen() {
@@ -103,18 +105,28 @@ function VoiceRecorderScreen() {
     }
   };
 
-  const saveTranscription = () => {
+  const saveTranscription = async () => {
     if (transcribedText.trim()) {
-      const newTranscription = {
-        text: transcribedText,
-        timestamp: new Date().toLocaleString(),
-        id: Date.now()
-      };
-      setSavedTranscriptions(prev => [...prev, newTranscription]);
-      setTranscribedText('');
-      setAudioURL('');
-      if (isRecording) {
-        stopRecording();
+      try {
+        const docRef = await addDoc(collection(db, 'transcriptions'), {
+          text: transcribedText,
+          timestamp: new Date().toLocaleString(),
+          createdAt: new Date()
+        });
+        const newTranscription = {
+          id: docRef.id,
+          text: transcribedText,
+          timestamp: new Date().toLocaleString()
+        };
+        setSavedTranscriptions(prev => [...prev, newTranscription]);
+        setTranscribedText('');
+        setAudioURL('');
+        if (isRecording) {
+          stopRecording();
+        }
+      } catch (error) {
+        console.error("Error saving transcription:", error);
+        alert("Error saving transcription. Please try again.");
       }
     }
   };
@@ -175,10 +187,19 @@ function VoiceRecorderScreen() {
 }
 
 function TaskListScreen() {
-  const [tasks, setTasks] = React.useState(() => {
-    const savedTasks = localStorage.getItem('tasks');
-    return savedTasks ? JSON.parse(savedTasks) : [];
-  });
+  const [tasks, setTasks] = React.useState([]);
+  
+  React.useEffect(() => {
+    const fetchTasks = async () => {
+      const querySnapshot = await getDocs(collection(db, 'tasks'));
+      const tasksList = querySnapshot.docs.map(doc => ({
+        id: doc.id,
+        ...doc.data()
+      }));
+      setTasks(tasksList);
+    };
+    fetchTasks();
+  }, []);
   const [newTask, setNewTask] = React.useState('');
 
   const addTask = (e) => {
