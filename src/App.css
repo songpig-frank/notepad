@@ -264,8 +264,20 @@ audio {
   color: #666;
 }
 
-.task-text {
+.task-content {
   flex: 1;
+}
+
+.task-title {
+  margin: 0;
+  font-size: 1.1em;
+  color: #333;
+}
+
+.task-description {
+  margin: 5px 0 0;
+  font-size: 0.9em;
+  color: #666;
 }
 
 .delete-button {

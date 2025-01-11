@@ -249,43 +249,79 @@ function VoiceRecorderScreen() {
 
 function TaskListScreen() {
   const [tasks, setTasks] = React.useState([]);
-  
+  const [newTask, setNewTask] = React.useState('');
+
   React.useEffect(() => {
     const fetchTasks = async () => {
-      const querySnapshot = await getDocs(collection(db, 'tasks'));
-      const tasksList = querySnapshot.docs.map(doc => ({
-        id: doc.id,
-        ...doc.data()
-      }));
-      setTasks(tasksList);
+      try {
+        const querySnapshot = await getDocs(collection(db, 'tasks'));
+        const tasksList = querySnapshot.docs.map(doc => ({
+          id: doc.id,
+          ...doc.data()
+        }));
+        setTasks(tasksList);
+      } catch (error) {
+        console.error("Error fetching tasks:", error);
+      }
     };
     fetchTasks();
   }, []);
-  const [newTask, setNewTask] = React.useState('');
 
-  const addTask = (e) => {
+  const addTask = async (e) => {
     e.preventDefault();
     if (newTask.trim()) {
-      const updatedTasks = [...tasks, {
-        id: Date.now(),
-        text: newTask,
-        completed: false,
-        createdAt: new Date().toLocaleString()
-      }];
-      setTasks(updatedTasks);
-      localStorage.setItem('tasks', JSON.stringify(updatedTasks));
-      setNewTask('');
+      try {
+        const sentences = newTask.split(/[.!?]+/);
+        const title = sentences[0].length > 50 ? 
+          sentences[0].substring(0, 50) + '...' : 
+          sentences[0];
+        const description = sentences.slice(1).join('. ').trim() || title;
+        
+        const taskRef = await addDoc(collection(db, 'tasks'), {
+          title,
+          description,
+          text: newTask,
+          completed: false,
+          createdAt: new Date().toLocaleString()
+        });
+        
+        setTasks([...tasks, {
+          id: taskRef.id,
+          title,
+          description,
+          text: newTask,
+          completed: false,
+          createdAt: new Date().toLocaleString()
+        }]);
+        setNewTask('');
+      } catch (error) {
+        console.error("Error adding task:", error);
+      }
     }
   };
 
-  const toggleTask = (taskId) => {
-    setTasks(tasks.map(task => 
-      task.id === taskId ? { ...task, completed: !task.completed } : task
-    ));
+  const toggleTask = async (taskId) => {
+    try {
+      const taskRef = doc(db, 'tasks', taskId);
+      const task = tasks.find(t => t.id === taskId);
+      await updateDoc(taskRef, {
+        completed: !task.completed
+      });
+      setTasks(tasks.map(task => 
+        task.id === taskId ? { ...task, completed: !task.completed } : task
+      ));
+    } catch (error) {
+      console.error("Error toggling task:", error);
+    }
   };
 
-  const deleteTask = (taskId) => {
-    setTasks(tasks.filter(task => task.id !== taskId));
+  const deleteTask = async (taskId) => {
+    try {
+      await deleteDoc(doc(db, 'tasks', taskId));
+      setTasks(tasks.filter(task => task.id !== taskId));
+    } catch (error) {
+      console.error("Error deleting task:", error);
+    }
   };
 
   return (
@@ -311,7 +347,10 @@ function TaskListScreen() {
                 checked={task.completed}
                 onChange={() => toggleTask(task.id)}
               />
-              <span className="task-text">{task.text}</span>
+              <div className="task-content">
+                <h4 className="task-title">{task.title}</h4>
+                {task.description && <p className="task-description">{task.description}</p>}
+              </div>
               <small>{task.createdAt}</small>
               <button onClick={() => deleteTask(task.id)} className="delete-button">
                 Delete
