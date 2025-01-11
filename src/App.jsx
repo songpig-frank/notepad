@@ -149,6 +149,22 @@ function VoiceRecorderScreen() {
             <div key={item.id} className="transcription-item">
               <p>{item.text}</p>
               <small>{item.timestamp}</small>
+              <button 
+                className="convert-task-button"
+                onClick={() => {
+                  const tasks = JSON.parse(localStorage.getItem('tasks') || '[]');
+                  const newTask = {
+                    id: Date.now(),
+                    text: item.text,
+                    completed: false,
+                    createdAt: new Date().toLocaleString()
+                  };
+                  localStorage.setItem('tasks', JSON.stringify([...tasks, newTask]));
+                  alert('Task created! Check the Task List.');
+                }}
+              >
+                Convert to Task
+              </button>
             </div>
           ))}
         </div>
@@ -158,18 +174,23 @@ function VoiceRecorderScreen() {
 }
 
 function TaskListScreen() {
-  const [tasks, setTasks] = React.useState([]);
+  const [tasks, setTasks] = React.useState(() => {
+    const savedTasks = localStorage.getItem('tasks');
+    return savedTasks ? JSON.parse(savedTasks) : [];
+  });
   const [newTask, setNewTask] = React.useState('');
 
   const addTask = (e) => {
     e.preventDefault();
     if (newTask.trim()) {
-      setTasks([...tasks, {
+      const updatedTasks = [...tasks, {
         id: Date.now(),
         text: newTask,
         completed: false,
         createdAt: new Date().toLocaleString()
-      }]);
+      }];
+      setTasks(updatedTasks);
+      localStorage.setItem('tasks', JSON.stringify(updatedTasks));
       setNewTask('');
     }
   };
