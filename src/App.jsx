@@ -146,6 +146,7 @@ function VoiceRecorderScreen() {
 
   return (
     <div className="container">
+      <Link to="/" className="back-button">← Back</Link>
       <h1 className="title">Voice Recorder</h1>
       <div className="recorder-controls">
         {!isRecording ? (
