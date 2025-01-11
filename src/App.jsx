@@ -226,18 +226,33 @@ function VoiceRecorderScreen() {
               <button 
                 className="convert-task-button"
                 onClick={async () => {
-                  const tasks = JSON.parse(localStorage.getItem('tasks') || '[]');
-                  const newTask = {
-                    id: Date.now(),
-                    text: item.text,
-                    completed: false,
-                    createdAt: new Date().toLocaleString()
-                  };
-                  localStorage.setItem('tasks', JSON.stringify([...tasks, newTask]));
-                  const transcriptionsRef = collection(db, 'transcriptions');
-                  await deleteDoc(doc(transcriptionsRef, item.id));
-                  setSavedTranscriptions(prev => prev.filter(t => t.id !== item.id));
-                  alert('Task created! Check the Task List.');
+                  try {
+                    const sentences = item.text.split(/[.!?]+/);
+                    const title = sentences[0].length > 50 ? 
+                      sentences[0].substring(0, 50) + '...' : 
+                      sentences[0];
+                    const description = sentences.slice(1).join('. ').trim() || title;
+
+                    const newTask = {
+                      title,
+                      description,
+                      text: item.text,
+                      completed: false,
+                      createdAt: new Date().toLocaleString()
+                    };
+
+                    // Add to Firestore tasks collection
+                    await addDoc(collection(db, 'tasks'), newTask);
+                    
+                    // Delete from transcriptions
+                    const transcriptionsRef = collection(db, 'transcriptions');
+                    await deleteDoc(doc(transcriptionsRef, item.id));
+                    setSavedTranscriptions(prev => prev.filter(t => t.id !== item.id));
+                    alert('Task created! Check the Task List.');
+                  } catch (error) {
+                    console.error("Error converting task:", error);
+                    alert('Error creating task. Please try again.');
+                  }
                 }}
               >
                 Convert to Task
