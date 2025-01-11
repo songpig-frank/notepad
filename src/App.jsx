@@ -21,13 +21,28 @@ function HomeScreen() {
 function VoiceRecorderScreen() {
   const [isRecording, setIsRecording] = React.useState(false);
   const [audioURL, setAudioURL] = React.useState('');
+  const [transcribedText, setTranscribedText] = React.useState('');
   const mediaRecorder = React.useRef(null);
   const audioChunks = React.useRef([]);
+  const recognition = React.useRef(null);
 
   const startRecording = async () => {
     try {
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
       mediaRecorder.current = new MediaRecorder(stream);
+      
+      // Initialize speech recognition
+      recognition.current = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+      recognition.current.continuous = true;
+      recognition.current.interimResults = true;
+      
+      recognition.current.onresult = (event) => {
+        const transcript = Array.from(event.results)
+          .map(result => result[0])
+          .map(result => result.transcript)
+          .join('');
+        setTranscribedText(transcript);
+      };
       
       mediaRecorder.current.ondataavailable = (event) => {
         audioChunks.current.push(event.data);
@@ -41,6 +56,7 @@ function VoiceRecorderScreen() {
       };
 
       mediaRecorder.current.start();
+      recognition.current.start();
       setIsRecording(true);
     } catch (err) {
       console.error("Error accessing microphone:", err);
@@ -51,6 +67,7 @@ function VoiceRecorderScreen() {
   const stopRecording = () => {
     if (mediaRecorder.current && isRecording) {
       mediaRecorder.current.stop();
+      recognition.current.stop();
       setIsRecording(false);
       mediaRecorder.current.stream.getTracks().forEach(track => track.stop());
     }
@@ -72,6 +89,12 @@ function VoiceRecorderScreen() {
         {audioURL && (
           <div className="audio-player">
             <audio controls src={audioURL} />
+          </div>
+        )}
+        {transcribedText && (
+          <div className="transcription">
+            <h3>Transcription:</h3>
+            <p>{transcribedText}</p>
           </div>
         )}
       </div>
