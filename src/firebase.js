@@ -19,6 +19,24 @@ if (!firebaseConfig.apiKey) {
 try {
   const app = initializeApp(firebaseConfig);
   const db = getFirestore(app);
+  console.log("Firebase connection successful!");
+  
+  // Test write to Firestore
+  const testConnection = async () => {
+    try {
+      const testCollection = collection(db, 'test');
+      await addDoc(testCollection, {
+        test: true,
+        timestamp: new Date()
+      });
+      console.log("Successfully wrote to Firestore!");
+    } catch (error) {
+      console.error("Error writing to Firestore:", error);
+    }
+  };
+  
+  testConnection();
+  
   export { db };
 } catch (error) {
   console.error("Error initializing Firebase:", error);
