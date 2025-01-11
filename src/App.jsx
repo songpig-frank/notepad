@@ -159,7 +159,9 @@ function VoiceRecorderScreen() {
       alert("Transcription saved successfully!");
     } catch (error) {
       console.error("Error saving transcription:", error);
-      alert(`Error saving transcription: ${error.message}`);
+      setError(`Failed to save: ${error.message}`);
+    } finally {
+      setIsLoading(false);
     }
   };
 
