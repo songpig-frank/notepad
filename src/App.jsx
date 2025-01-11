@@ -111,6 +111,10 @@ function VoiceRecorderScreen() {
       };
       setSavedTranscriptions(prev => [...prev, newTranscription]);
       setTranscribedText('');
+      setAudioURL('');
+      if (isRecording) {
+        stopRecording();
+      }
     }
   };
 
