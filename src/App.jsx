@@ -8,7 +8,9 @@ import './App.css';
 function HomeScreen() {
   return (
     <div className="container">
-      <h1 className="title">Welcome to ADHD Pad!</h1>
+      <img src="/logo.png" alt="ADHD Pad" className="logo" />
+      <h1 className="title">Turn Your Ideas into Action</h1>
+      <p className="subtitle">Capture, organize, and complete tasks with ADHD Pad</p>
       <div className="buttonContainer">
         <Link to="/voice-recorder" className="button">
           <span className="buttonText">Voice Recorder</span>
