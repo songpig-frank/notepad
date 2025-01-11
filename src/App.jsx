@@ -2,7 +2,7 @@
 import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
-import { View, Text, Button, StyleSheet } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import './App.css';
 
 const Stack = createStackNavigator();
@@ -12,14 +12,18 @@ function HomeScreen({ navigation }) {
     <View style={styles.container}>
       <Text style={styles.title}>Welcome to ADHD Pad!</Text>
       <View style={styles.buttonContainer}>
-        <Button
-          title="Voice Recorder"
+        <TouchableOpacity 
+          style={styles.button} 
           onPress={() => navigation.navigate('VoiceRecorder')}
-        />
-        <Button
-          title="Task List"
+        >
+          <Text style={styles.buttonText}>Voice Recorder</Text>
+        </TouchableOpacity>
+        <TouchableOpacity 
+          style={styles.button} 
           onPress={() => navigation.navigate('TaskList')}
-        />
+        >
+          <Text style={styles.buttonText}>Task List</Text>
+        </TouchableOpacity>
       </View>
     </View>
   );
@@ -28,8 +32,7 @@ function HomeScreen({ navigation }) {
 function VoiceRecorderScreen() {
   return (
     <View style={styles.container}>
-      <Text>Voice Recorder</Text>
-      {/* Voice recorder functionality will be added here */}
+      <Text style={styles.title}>Voice Recorder</Text>
     </View>
   );
 }
@@ -37,8 +40,7 @@ function VoiceRecorderScreen() {
 function TaskListScreen() {
   return (
     <View style={styles.container}>
-      <Text>Task List</Text>
-      {/* Task list functionality will be added here */}
+      <Text style={styles.title}>Task List</Text>
     </View>
   );
 }
@@ -69,4 +71,15 @@ const styles = StyleSheet.create({
   buttonContainer: {
     gap: 10,
   },
+  button: {
+    backgroundColor: '#4CAF50',
+    padding: 10,
+    borderRadius: 4,
+    minWidth: 150,
+    alignItems: 'center',
+  },
+  buttonText: {
+    color: 'white',
+    fontSize: 16,
+  }
 });
