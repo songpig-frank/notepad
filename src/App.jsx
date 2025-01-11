@@ -106,28 +106,41 @@ function VoiceRecorderScreen() {
   };
 
   const saveTranscription = async () => {
-    if (transcribedText.trim()) {
-      try {
-        const docRef = await addDoc(collection(db, 'transcriptions'), {
-          text: transcribedText,
-          timestamp: new Date().toLocaleString(),
-          createdAt: new Date()
-        });
-        const newTranscription = {
-          id: docRef.id,
-          text: transcribedText,
-          timestamp: new Date().toLocaleString()
-        };
-        setSavedTranscriptions(prev => [...prev, newTranscription]);
-        setTranscribedText('');
-        setAudioURL('');
-        if (isRecording) {
-          stopRecording();
-        }
-      } catch (error) {
-        console.error("Error saving transcription:", error);
-        alert("Error saving transcription. Please try again.");
+    if (!transcribedText.trim()) {
+      alert("Please record some text before saving.");
+      return;
+    }
+
+    try {
+      if (!db) {
+        throw new Error("Firebase database is not initialized");
       }
+
+      const transcriptionsRef = collection(db, 'transcriptions');
+      const docRef = await addDoc(transcriptionsRef, {
+        text: transcribedText,
+        timestamp: new Date().toLocaleString(),
+        createdAt: new Date()
+      });
+
+      const newTranscription = {
+        id: docRef.id,
+        text: transcribedText,
+        timestamp: new Date().toLocaleString()
+      };
+
+      setSavedTranscriptions(prev => [...prev, newTranscription]);
+      setTranscribedText('');
+      setAudioURL('');
+      
+      if (isRecording) {
+        stopRecording();
+      }
+
+      alert("Transcription saved successfully!");
+    } catch (error) {
+      console.error("Error saving transcription:", error);
+      alert(`Error saving transcription: ${error.message}`);
     }
   };
 
