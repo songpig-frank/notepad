@@ -23,6 +23,7 @@ function VoiceRecorderScreen() {
   const [isRecording, setIsRecording] = React.useState(false);
   const [audioURL, setAudioURL] = React.useState('');
   const [transcribedText, setTranscribedText] = React.useState('');
+  const [savedTranscriptions, setSavedTranscriptions] = React.useState([]);
   const mediaRecorder = React.useRef(null);
   const audioChunks = React.useRef([]);
   const recognition = React.useRef(null);
@@ -101,6 +102,18 @@ function VoiceRecorderScreen() {
     }
   };
 
+  const saveTranscription = () => {
+    if (transcribedText.trim()) {
+      const newTranscription = {
+        text: transcribedText,
+        timestamp: new Date().toLocaleString(),
+        id: Date.now()
+      };
+      setSavedTranscriptions(prev => [...prev, newTranscription]);
+      setTranscribedText('');
+    }
+  };
+
   return (
     <div className="container">
       <h1 className="title">Voice Recorder</h1>
@@ -122,6 +135,18 @@ function VoiceRecorderScreen() {
         <div className="transcription">
           <h3>Transcription:</h3>
           <p>{transcribedText || "Transcription will appear here when you record and speak..."}</p>
+          <button className="button" onClick={saveTranscription} disabled={!transcribedText.trim()}>
+            Save Transcription
+          </button>
+        </div>
+        <div className="saved-transcriptions">
+          <h3>Saved Transcriptions</h3>
+          {savedTranscriptions.map(item => (
+            <div key={item.id} className="transcription-item">
+              <p>{item.text}</p>
+              <small>{item.timestamp}</small>
+            </div>
+          ))}
         </div>
       </div>
     </div>

@@ -92,3 +92,23 @@ audio {
 .transcription p {
   line-height: 1.5;
 }
+
+.saved-transcriptions {
+  margin-top: 20px;
+  width: 100%;
+  max-width: 500px;
+}
+
+.transcription-item {
+  background: #fff;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  padding: 10px;
+  margin: 10px 0;
+}
+
+.transcription-item small {
+  color: #666;
+  display: block;
+  margin-top: 5px;
+}
