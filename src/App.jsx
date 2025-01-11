@@ -32,24 +32,45 @@ function VoiceRecorderScreen() {
       mediaRecorder.current = new MediaRecorder(stream);
       audioChunks.current = [];
       
-      try {
-        const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-        if (!SpeechRecognition) {
-          throw new Error("Speech recognition is not supported");
-        }
-        
+      mediaRecorder.current.ondataavailable = (event) => {
+        audioChunks.current.push(event.data);
+      };
+
+      mediaRecorder.current.onstop = () => {
+        const audioBlob = new Blob(audioChunks.current, { type: 'audio/wav' });
+        const url = URL.createObjectURL(audioBlob);
+        setAudioURL(url);
+        audioChunks.current = [];
+      };
+
+      mediaRecorder.current.start();
+      setIsRecording(true);
+
+      // Set up speech recognition after audio recording is confirmed working
+      const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+      if (SpeechRecognition) {
         recognition.current = new SpeechRecognition();
         recognition.current.continuous = true;
-        recognition.current.interimResults = true;
+        recognition.current.interimResults = false;
         recognition.current.lang = 'en-US';
+
+        recognition.current.onstart = () => {
+          console.log('Speech recognition started');
+        };
 
         recognition.current.onerror = (event) => {
           console.error('Speech recognition error:', event.error);
+          if (event.error === 'network') {
+            recognition.current?.stop();
+          }
         };
-      } catch (speechError) {
-        console.error("Speech recognition error:", speechError);
-        alert("Speech recognition failed. Recording audio only.");
-      }
+
+        recognition.current.onend = () => {
+          console.log('Speech recognition ended');
+          if (isRecording) {
+            recognition.current?.start();
+          }
+        };
       
       recognition.current.onresult = (event) => {
         const transcript = event.results[event.results.length - 1][0].transcript;
