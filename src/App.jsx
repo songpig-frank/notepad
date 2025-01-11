@@ -32,9 +32,19 @@ function VoiceRecorderScreen() {
       mediaRecorder.current = new MediaRecorder(stream);
       
       // Initialize speech recognition
-      recognition.current = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+      const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+      if (!SpeechRecognition) {
+        alert("Speech recognition is not supported in your browser");
+        return;
+      }
+      recognition.current = new SpeechRecognition();
       recognition.current.continuous = true;
       recognition.current.interimResults = true;
+      recognition.current.lang = 'en-US';
+
+      recognition.current.onerror = (event) => {
+        console.error('Speech recognition error:', event.error);
+      };
       
       recognition.current.onresult = (event) => {
         const transcript = Array.from(event.results)
