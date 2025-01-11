@@ -24,6 +24,7 @@ function VoiceRecorderScreen() {
   const [audioURL, setAudioURL] = React.useState('');
   const [transcribedText, setTranscribedText] = React.useState('');
   const [savedTranscriptions, setSavedTranscriptions] = React.useState([]);
+  const [error, setError] = React.useState('');
   const mediaRecorder = React.useRef(null);
   const audioChunks = React.useRef([]);
   const recognition = React.useRef(null);
