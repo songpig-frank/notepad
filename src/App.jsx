@@ -30,29 +30,26 @@ function VoiceRecorderScreen() {
     try {
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
       mediaRecorder.current = new MediaRecorder(stream);
+      audioChunks.current = [];
       
-      const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-      if (!SpeechRecognition) {
-        alert("Speech recognition is not supported in your browser");
-        return;
-      }
-      
-      if (recognition.current) {
-        recognition.current.stop();
-      }
-      
-      recognition.current = new SpeechRecognition();
-      recognition.current.continuous = false;
-      recognition.current.interimResults = false;
-      recognition.current.lang = 'en-US';
-
-      recognition.current.onerror = (event) => {
-        console.error('Speech recognition error:', event.error);
-        if (event.error === 'network') {
-          recognition.current.stop();
-          setTimeout(() => recognition.current.start(), 1000);
+      try {
+        const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+        if (!SpeechRecognition) {
+          throw new Error("Speech recognition is not supported");
         }
-      };
+        
+        recognition.current = new SpeechRecognition();
+        recognition.current.continuous = true;
+        recognition.current.interimResults = true;
+        recognition.current.lang = 'en-US';
+
+        recognition.current.onerror = (event) => {
+          console.error('Speech recognition error:', event.error);
+        };
+      } catch (speechError) {
+        console.error("Speech recognition error:", speechError);
+        alert("Speech recognition failed. Recording audio only.");
+      }
       
       recognition.current.onresult = (event) => {
         const transcript = event.results[event.results.length - 1][0].transcript;
