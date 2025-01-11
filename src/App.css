@@ -126,6 +126,16 @@ audio {
   margin: 10px 0;
 }
 
+.transcription-item h4 {
+  margin: 0 0 8px 0;
+  color: #333;
+}
+
+.transcription-item p {
+  color: #666;
+  margin: 0 0 8px 0;
+}
+
 .transcription-item small {
   color: #666;
   display: block;

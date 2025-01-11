@@ -136,7 +136,21 @@ function VoiceRecorderScreen() {
       }
 
       const transcriptionsRef = collection(db, 'transcriptions');
+      // Extract title (first sentence or first X words)
+      const sentences = transcribedText.split(/[.!?]+/);
+      const firstSentence = sentences[0].trim();
+      const title = firstSentence.length > 50 ? 
+        firstSentence.split(' ').slice(0, 5).join(' ') + '...' : 
+        firstSentence;
+
+      // Extract description (next few sentences or remaining text)
+      const description = sentences.slice(1, 3)
+        .join('. ')
+        .trim() || firstSentence;
+
       const docRef = await addDoc(transcriptionsRef, {
+        title,
+        description,
         text: transcribedText,
         timestamp: new Date().toLocaleString(),
         createdAt: new Date()
@@ -144,6 +158,8 @@ function VoiceRecorderScreen() {
 
       const newTranscription = {
         id: docRef.id,
+        title,
+        description,
         text: transcribedText,
         timestamp: new Date().toLocaleString()
       };
@@ -200,7 +216,8 @@ function VoiceRecorderScreen() {
           <h3>Saved Transcriptions</h3>
           {savedTranscriptions.map(item => (
             <div key={item.id} className="transcription-item">
-              <p>{item.text}</p>
+              <h4>{item.title}</h4>
+              <p>{item.description}</p>
               <small>{item.timestamp}</small>
               <button 
                 className="convert-task-button"
