@@ -61,6 +61,13 @@ function VoiceRecorderScreen() {
 
           recognition.current.onerror = (event) => {
             console.error('Speech recognition error:', event.error);
+            setTranscribedText(prev => prev + `\nError: ${event.error}. Please try again.`);
+            if (event.error === 'network') {
+              setTranscribedText(prev => prev + '\nPlease check your internet connection.');
+            } else if (event.error === 'audio-capture') {
+              setTranscribedText(prev => prev + '\nNo microphone was found or permission was denied.');
+            }
+            stopRecording();
           };
 
           recognition.current.onend = () => {
