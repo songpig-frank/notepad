@@ -51,8 +51,17 @@ body {
 .logo {
   width: 120px;
   height: 120px;
-  margin-bottom: 30px;
+  margin-bottom: 10px;
   filter: drop-shadow(0 4px 8px rgba(0,0,0,0.1));
+}
+
+.domain-name {
+  font-family: 'Poppins', sans-serif;
+  color: #4CAF50;
+  font-size: 1.2rem;
+  font-weight: 600;
+  margin-bottom: 20px;
+  letter-spacing: 0.5px;
 }
 
 .title {

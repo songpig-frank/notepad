@@ -1,6 +1,7 @@
 
 import React from 'react';
 import { BrowserRouter, Routes, Route, Link } from 'react-router-dom';
+import logo from './logo.svg';
 import { db } from './firebase';
 import { collection, addDoc, getDocs, deleteDoc, doc, updateDoc } from 'firebase/firestore';
 import './App.css';
@@ -8,7 +9,8 @@ import './App.css';
 function HomeScreen() {
   return (
     <div className="container">
-      <img src="/logo.png" alt="ADHD Pad" className="logo" />
+      <img src={logo} alt="ADHD Pad" className="logo" />
+      <div className="domain-name">ADHDPad.com</div>
       <h1 className="title">Turn Your Ideas into Action</h1>
       <p className="subtitle">Capture, organize, and complete tasks with ADHD Pad</p>
       <div className="buttonContainer">
