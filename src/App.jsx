@@ -234,6 +234,9 @@ function VoiceRecorderScreen() {
                     createdAt: new Date().toLocaleString()
                   };
                   localStorage.setItem('tasks', JSON.stringify([...tasks, newTask]));
+                  const transcriptionsRef = collection(db, 'transcriptions');
+                  await deleteDoc(doc(transcriptionsRef, item.id));
+                  setSavedTranscriptions(prev => prev.filter(t => t.id !== item.id));
                   alert('Task created! Check the Task List.');
                 }}
               >
@@ -250,6 +253,13 @@ function VoiceRecorderScreen() {
 function TaskListScreen() {
   const [tasks, setTasks] = React.useState([]);
   const [newTask, setNewTask] = React.useState('');
+  const [searchQuery, setSearchQuery] = React.useState('');
+  
+  const filteredTasks = tasks.filter(task => 
+    task.text?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    task.title?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    task.description?.toLowerCase().includes(searchQuery.toLowerCase())
+  );
 
   React.useEffect(() => {
     const fetchTasks = async () => {
@@ -329,6 +339,14 @@ function TaskListScreen() {
       <Link to="/" className="back-button">← Back</Link>
       <h1 className="title">Task List</h1>
       <div className="task-container">
+        <input
+          type="text"
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          placeholder="Search tasks..."
+          className="task-input"
+          style={{ marginBottom: '10px' }}
+        />
         <form onSubmit={addTask} className="task-form">
           <input
             type="text"
@@ -340,7 +358,7 @@ function TaskListScreen() {
           <button type="submit" className="button">Add Task</button>
         </form>
         <div className="task-list">
-          {tasks.map(task => (
+          {filteredTasks.map(task => (
             <div key={task.id} className={`task-item ${task.completed ? 'completed' : ''}`}>
               <input
                 type="checkbox"
