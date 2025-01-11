@@ -3,15 +3,17 @@ import { initializeApp } from 'firebase/app';
 import { getFirestore } from 'firebase/firestore';
 
 const firebaseConfig = {
-  // You'll need to add your Firebase config here
-  // Get these values from your Firebase console
-  apiKey: "",
-  authDomain: "",
-  projectId: "",
-  storageBucket: "",
-  messagingSenderId: "",
-  appId: ""
+  apiKey: process.env.FIREBASE_API_KEY || "",
+  authDomain: process.env.FIREBASE_AUTH_DOMAIN || "",
+  projectId: process.env.FIREBASE_PROJECT_ID || "",
+  storageBucket: process.env.FIREBASE_STORAGE_BUCKET || "",
+  messagingSenderId: process.env.FIREBASE_MESSAGING_SENDER_ID || "",
+  appId: process.env.FIREBASE_APP_ID || ""
 };
+
+if (!firebaseConfig.apiKey) {
+  console.error("Firebase configuration is missing. Please check your environment variables.");
+}
 
 const app = initializeApp(firebaseConfig);
 export const db = getFirestore(app);
