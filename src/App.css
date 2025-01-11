@@ -48,3 +48,26 @@ body {
   color: white;
   font-size: 16px;
 }
+
+.recorder-controls {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  align-items: center;
+}
+
+.recording {
+  background-color: #ff4444;
+}
+
+.recording:hover {
+  background-color: #ff0000;
+}
+
+.audio-player {
+  margin-top: 20px;
+}
+
+audio {
+  width: 300px;
+}
