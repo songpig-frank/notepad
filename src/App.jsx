@@ -27,6 +27,23 @@ function VoiceRecorderScreen() {
   const [transcribedText, setTranscribedText] = React.useState('');
   const [savedTranscriptions, setSavedTranscriptions] = React.useState([]);
   const [error, setError] = React.useState('');
+  const [isLoading, setIsLoading] = React.useState(false);
+
+  React.useEffect(() => {
+    const fetchTranscriptions = async () => {
+      try {
+        const querySnapshot = await getDocs(collection(db, 'transcriptions'));
+        const transcriptionsList = querySnapshot.docs.map(doc => ({
+          id: doc.id,
+          ...doc.data()
+        }));
+        setSavedTranscriptions(transcriptionsList);
+      } catch (error) {
+        setError('Error fetching transcriptions: ' + error.message);
+      }
+    };
+    fetchTranscriptions();
+  }, []);
   const mediaRecorder = React.useRef(null);
   const audioChunks = React.useRef([]);
   const recognition = React.useRef(null);
@@ -107,10 +124,12 @@ function VoiceRecorderScreen() {
 
   const saveTranscription = async () => {
     if (!transcribedText.trim()) {
-      alert("Please record some text before saving.");
+      setError("Please record some text before saving.");
       return;
     }
 
+    setIsLoading(true);
+    setError('');
     try {
       if (!db) {
         throw new Error("Firebase database is not initialized");
@@ -166,8 +185,13 @@ function VoiceRecorderScreen() {
         <div className="transcription">
           <h3>Transcription:</h3>
           <p>{transcribedText || "Transcription will appear here when you record and speak..."}</p>
-          <button className="button" onClick={saveTranscription} disabled={!transcribedText.trim()}>
-            Save Transcription
+          {error && <div className="error-message">{error}</div>}
+          <button 
+            className="button" 
+            onClick={saveTranscription} 
+            disabled={!transcribedText.trim() || isLoading}
+          >
+            {isLoading ? 'Saving...' : 'Save Transcription'}
           </button>
         </div>
         <div className="saved-transcriptions">
