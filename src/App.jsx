@@ -91,12 +91,10 @@ function VoiceRecorderScreen() {
             <audio controls src={audioURL} />
           </div>
         )}
-        {transcribedText && (
-          <div className="transcription">
-            <h3>Transcription:</h3>
-            <p>{transcribedText}</p>
-          </div>
-        )}
+        <div className="transcription">
+          <h3>Transcription:</h3>
+          <p>{transcribedText || "Transcription will appear here when you record and speak..."}</p>
+        </div>
       </div>
     </div>
   );

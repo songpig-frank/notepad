@@ -74,11 +74,14 @@ audio {
 
 .transcription {
   margin-top: 20px;
+  width: 100%;
   max-width: 500px;
   text-align: left;
   padding: 15px;
   background: #f5f5f5;
   border-radius: 8px;
+  border: 1px solid #ddd;
+  min-height: 100px;
 }
 
 .transcription h3 {
