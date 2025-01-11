@@ -225,7 +225,7 @@ function VoiceRecorderScreen() {
               <small>{item.timestamp}</small>
               <button 
                 className="convert-task-button"
-                onClick={() => {
+                onClick={async () => {
                   const tasks = JSON.parse(localStorage.getItem('tasks') || '[]');
                   const newTask = {
                     id: Date.now(),
