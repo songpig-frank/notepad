@@ -46,12 +46,17 @@ function VoiceRecorderScreen() {
       mediaRecorder.current.start();
       setIsRecording(true);
 
-      // Set up speech recognition after audio recording is confirmed working
-      const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-      if (SpeechRecognition) {
+      // Set up speech recognition
+      try {
+        const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+        if (!SpeechRecognition) {
+          console.warn('Speech recognition not supported');
+          return;
+        }
+
         recognition.current = new SpeechRecognition();
         recognition.current.continuous = true;
-        recognition.current.interimResults = false;
+        recognition.current.interimResults = true;
         recognition.current.lang = 'en-US';
 
         recognition.current.onstart = () => {
@@ -60,20 +65,14 @@ function VoiceRecorderScreen() {
 
         recognition.current.onerror = (event) => {
           console.error('Speech recognition error:', event.error);
-          if (event.error === 'network') {
-            recognition.current?.stop();
-          }
         };
 
         recognition.current.onend = () => {
           console.log('Speech recognition ended');
-          if (isRecording) {
-            recognition.current?.start();
-          }
         };
-      
-      recognition.current.onresult = (event) => {
-        const transcript = event.results[event.results.length - 1][0].transcript;
+
+        recognition.current.onresult = (event) => {
+          const transcript = event.results[event.results.length - 1][0].transcript;
         setTranscribedText(prev => prev + ' ' + transcript);
       };
       
