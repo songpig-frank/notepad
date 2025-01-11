@@ -154,9 +154,63 @@ function VoiceRecorderScreen() {
 }
 
 function TaskListScreen() {
+  const [tasks, setTasks] = React.useState([]);
+  const [newTask, setNewTask] = React.useState('');
+
+  const addTask = (e) => {
+    e.preventDefault();
+    if (newTask.trim()) {
+      setTasks([...tasks, {
+        id: Date.now(),
+        text: newTask,
+        completed: false,
+        createdAt: new Date().toLocaleString()
+      }]);
+      setNewTask('');
+    }
+  };
+
+  const toggleTask = (taskId) => {
+    setTasks(tasks.map(task => 
+      task.id === taskId ? { ...task, completed: !task.completed } : task
+    ));
+  };
+
+  const deleteTask = (taskId) => {
+    setTasks(tasks.filter(task => task.id !== taskId));
+  };
+
   return (
     <div className="container">
       <h1 className="title">Task List</h1>
+      <div className="task-container">
+        <form onSubmit={addTask} className="task-form">
+          <input
+            type="text"
+            value={newTask}
+            onChange={(e) => setNewTask(e.target.value)}
+            placeholder="Enter a new task..."
+            className="task-input"
+          />
+          <button type="submit" className="button">Add Task</button>
+        </form>
+        <div className="task-list">
+          {tasks.map(task => (
+            <div key={task.id} className={`task-item ${task.completed ? 'completed' : ''}`}>
+              <input
+                type="checkbox"
+                checked={task.completed}
+                onChange={() => toggleTask(task.id)}
+              />
+              <span className="task-text">{task.text}</span>
+              <small>{task.createdAt}</small>
+              <button onClick={() => deleteTask(task.id)} className="delete-button">
+                Delete
+              </button>
+            </div>
+          ))}
+        </div>
+      </div>
     </div>
   );
 }
