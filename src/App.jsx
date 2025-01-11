@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { BrowserRouter, Routes, Route, Link } from 'react-router-dom';
 import './App.css';
@@ -31,7 +32,7 @@ function VoiceRecorderScreen() {
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
       mediaRecorder.current = new MediaRecorder(stream);
       audioChunks.current = [];
-      
+
       mediaRecorder.current.ondataavailable = (event) => {
         audioChunks.current.push(event.data);
       };
@@ -46,50 +47,36 @@ function VoiceRecorderScreen() {
       mediaRecorder.current.start();
       setIsRecording(true);
 
-      // Set up speech recognition
       try {
         const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-        if (!SpeechRecognition) {
-          console.warn('Speech recognition not supported');
-          return;
+        if (SpeechRecognition) {
+          recognition.current = new SpeechRecognition();
+          recognition.current.continuous = true;
+          recognition.current.interimResults = true;
+          recognition.current.lang = 'en-US';
+
+          recognition.current.onstart = () => {
+            console.log('Speech recognition started');
+          };
+
+          recognition.current.onerror = (event) => {
+            console.error('Speech recognition error:', event.error);
+          };
+
+          recognition.current.onend = () => {
+            console.log('Speech recognition ended');
+          };
+
+          recognition.current.onresult = (event) => {
+            const transcript = event.results[event.results.length - 1][0].transcript;
+            setTranscribedText(prev => prev + ' ' + transcript);
+          };
+
+          recognition.current.start();
         }
-
-        recognition.current = new SpeechRecognition();
-        recognition.current.continuous = true;
-        recognition.current.interimResults = true;
-        recognition.current.lang = 'en-US';
-
-        recognition.current.onstart = () => {
-          console.log('Speech recognition started');
-        };
-
-        recognition.current.onerror = (event) => {
-          console.error('Speech recognition error:', event.error);
-        };
-
-        recognition.current.onend = () => {
-          console.log('Speech recognition ended');
-        };
-
-        recognition.current.onresult = (event) => {
-          const transcript = event.results[event.results.length - 1][0].transcript;
-        setTranscribedText(prev => prev + ' ' + transcript);
-      };
-      
-      mediaRecorder.current.ondataavailable = (event) => {
-        audioChunks.current.push(event.data);
-      };
-
-      mediaRecorder.current.onstop = () => {
-        const audioBlob = new Blob(audioChunks.current, { type: 'audio/wav' });
-        const url = URL.createObjectURL(audioBlob);
-        setAudioURL(url);
-        audioChunks.current = [];
-      };
-
-      mediaRecorder.current.start();
-      recognition.current.start();
-      setIsRecording(true);
+      } catch (speechError) {
+        console.error('Speech recognition error:', speechError);
+      }
     } catch (err) {
       console.error("Error accessing microphone:", err);
       alert("Error accessing microphone. Please ensure you've granted permission.");
@@ -99,7 +86,9 @@ function VoiceRecorderScreen() {
   const stopRecording = () => {
     if (mediaRecorder.current && isRecording) {
       mediaRecorder.current.stop();
-      recognition.current.stop();
+      if (recognition.current) {
+        recognition.current.stop();
+      }
       setIsRecording(false);
       mediaRecorder.current.stream.getTracks().forEach(track => track.stop());
     }
