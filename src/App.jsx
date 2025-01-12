@@ -340,6 +340,7 @@ function TaskListScreen() {
           description,
           text: newTask,
           completed: false,
+          urgent: false,
           createdAt: new Date().toLocaleString()
         });
         
@@ -387,6 +388,23 @@ function TaskListScreen() {
       <Link to="/" className="back-button">← Back</Link>
       <h1 className="title">Task List</h1>
       <div className="task-container">
+        <div className="task-controls">
+          <select 
+            onChange={(e) => {
+              const tasks = [...filteredTasks];
+              if (e.target.value === 'urgent') {
+                tasks.sort((a, b) => (b.urgent ? 1 : 0) - (a.urgent ? 1 : 0));
+              } else if (e.target.value === 'newest') {
+                tasks.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+              }
+              setTasks(tasks);
+            }}
+            className="sort-select"
+          >
+            <option value="newest">Sort by Newest</option>
+            <option value="urgent">Sort by Urgent</option>
+          </select>
+        </div>
         <input
           type="text"
           value={searchQuery}
@@ -418,6 +436,18 @@ function TaskListScreen() {
                 {task.description && <p className="task-description">{task.description}</p>}
               </div>
               <small>{task.createdAt}</small>
+              <button 
+                onClick={async () => {
+                  const taskRef = doc(db, 'tasks', task.id);
+                  await updateDoc(taskRef, { urgent: !task.urgent });
+                  setTasks(tasks.map(t => 
+                    t.id === task.id ? { ...t, urgent: !t.urgent } : t
+                  ));
+                }} 
+                className={`urgent-button ${task.urgent ? 'active' : ''}`}
+              >
+                Urgent
+              </button>
               <button onClick={() => deleteTask(task.id)} className="delete-button">
                 Delete
               </button>
