@@ -367,6 +367,7 @@ audio {
 }
 
 .urgent-button {
+  display: none; /*Removed button*/
   padding: 5px 10px;
   margin-right: 10px;
   border: 1px solid #ff4444;
@@ -439,6 +440,7 @@ audio {
 }
 
 .task-header-actions {
+  display: none; /*Removed button*/
   position: absolute;
   top: 12px;
   right: 12px;
@@ -461,6 +463,7 @@ audio {
 }
 
 .task-menu-dots {
+  display: none; /*Removed button*/
   position: absolute;
   top: 50%;
   right: 16px;
@@ -476,6 +479,7 @@ audio {
 }
 
 .task-menu {
+  display: none; /*Removed button*/
   position: absolute;
   top: 16px;
   right: 16px;
@@ -642,9 +646,9 @@ audio {
 }
 
 .task-actions {
-  display: flex;
+  display: none; /*Removed button*/
   align-items: center;
-  gap: 10px;
+  gap: 8px;
   margin-top: 10px;
   width: 100%;
 }
@@ -758,6 +762,7 @@ audio {
 }
 
 .delete-button {
+  display: none; /*Removed button*/
   background: #ff4444;
   color: white;
   border: none;
@@ -789,7 +794,7 @@ audio {
 }
 
 .task-actions {
-  display: flex;
+  display: none;
   align-items: center;
   gap: 8px;
   margin-top: 12px;
