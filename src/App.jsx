@@ -568,7 +568,16 @@ function TaskListScreen() {
         </form>
         <div className="task-list">
           {filteredTasks.map(task => (
-            <div key={task.id} className={`task-item ${task.completed ? 'completed' : ''} ${task.urgent ? 'urgent' : ''}`}>
+            <div 
+              key={task.id} 
+              className={`task-item ${task.completed ? 'completed' : ''} ${task.urgent ? 'urgent' : ''}`}
+              onMouseLeave={(e) => {
+                const descriptionElement = e.currentTarget.querySelector('.task-description');
+                if (descriptionElement) {
+                  descriptionElement.scrollTop = 0;
+                }
+              }}
+            >
               <div className="task-header-actions">
                 <button 
                   onClick={() => {
@@ -604,10 +613,7 @@ function TaskListScreen() {
                     }}
                   />
                 </div>
-                <div 
-  className="task-description" 
-  onMouseLeave={(e) => e.target.scrollTop = 0}
->{task.description}</div>
+                <div className="task-description">{task.description}</div>
               </div>
               <div className="task-content">
                 <div className="task-id">ID: {task.julianId}</div>
