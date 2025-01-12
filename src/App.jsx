@@ -648,60 +648,49 @@ function TaskListScreen() {
                 </div>
               )}
                 <div className="task-content">
-                  <div className="task-id">ID: {task.julianId}</div>
+                <div className="task-id">ID: {task.julianId}</div>
+                <div className="task-description">{task.description}</div>
+                {task.expanded && (
+                  <>
+                    <textarea
+                      className="task-full-text-input"
+                      value={task.text}
+                      onChange={async (e) => {
+                        const newText = e.target.value;
+                        const taskRef = doc(db, 'tasks', task.id);
+                        await updateDoc(taskRef, { text: newText });
+                        setTasks(tasks.map(t => 
+                          t.id === task.id ? { ...t, text: newText } : t
+                        ));
+                      }}
+                    />
+                    <small>{task.createdAt}</small>
+                  </>
+                )}
+                <div className="button-group">
+                  <button 
+                    className="expand-button"
+                    onClick={() => {
+                      const updatedTasks = tasks.map(t => 
+                        t.id === task.id ? { ...t, expanded: !t.expanded } : t
+                      );
+                      setTasks(updatedTasks);
+                    }}
+                  >
+                    {task.expanded ? 'Collapse' : 'Expand'}
+                  </button>
                   {task.expanded && (
-                    <>
-                      <textarea
-                        className="task-description-input"
-                        value={task.description}
-                        onChange={async (e) => {
-                          const newDesc = e.target.value;
-                          const taskRef = doc(db, 'tasks', task.id);
-                          await updateDoc(taskRef, { description: newDesc });
-                          setTasks(tasks.map(t => 
-                            t.id === task.id ? { ...t, description: newDesc } : t
-                          ));
-                        }}
-                      />
-                      <textarea
-                        className="task-full-text-input"
-                        value={task.text}
-                        onChange={async (e) => {
-                          const newText = e.target.value;
-                          const taskRef = doc(db, 'tasks', task.id);
-                          await updateDoc(taskRef, { text: newText });
-                          setTasks(tasks.map(t => 
-                            t.id === task.id ? { ...t, text: newText } : t
-                          ));
-                        }}
-                      />
-                      <small>{task.createdAt}</small>
-                    </>
-                  )}
-                  <div className="button-group">
                     <button 
-                      className="expand-button"
+                      className="ai-assist-button"
                       onClick={() => {
-                        const updatedTasks = tasks.map(t => 
-                          t.id === task.id ? { ...t, expanded: !t.expanded } : t
-                        );
-                        setTasks(updatedTasks);
+                        alert('AI Assist: This feature will help break down your idea into actionable tasks. Coming soon!');
                       }}
                     >
-                      {task.expanded ? 'Collapse' : 'Expand'}
+                      🤖 AI Assist
                     </button>
-                    {task.expanded && (
-                      <button 
-                        className="ai-assist-button"
-                        onClick={() => {
-                          alert('AI Assist: This feature will help break down your idea into actionable tasks. Coming soon!');
-                        }}
-                      >
-                        🤖 AI Assist
-                      </button>
-                    )}
-                  </div>
+                  )}
                 </div>
+              </div>
               <div className="task-actions-wrapper">
                 <div className="task-actions">
                   <button 
