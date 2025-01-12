@@ -617,7 +617,8 @@ audio {
   white-space: normal;
   word-wrap: break-word;
   overflow-wrap: break-word;
-  word-break: normal;
+  word-break: break-word;
+  hyphens: auto;
   resize: none;
   border: 1px solid transparent;
   border-radius: 4px;
@@ -625,6 +626,7 @@ audio {
   display: block;
   box-sizing: border-box;
   max-width: 100%;
+  overflow: visible;
   text-align: center;
 }
 
