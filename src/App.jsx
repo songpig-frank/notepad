@@ -12,7 +12,7 @@ function HomeScreen() {
     try {
       const result = await import('./ai-service').then(module => module.testOpenAIConnection());
       setOpenAIStatus(result);
-      
+
       if (result.success) {
         alert(
           `Connection Successful!\n\n` +
@@ -56,7 +56,7 @@ function HomeScreen() {
             aiService.testOpenAIConnection(),
             aiService.testDeepSeekConnection()
           ]);
-          
+
           const results = `AI Model Test Results\n` +
             `------------------\n\n` +
             `OpenAI:\n` +
@@ -73,7 +73,7 @@ function HomeScreen() {
             `Proverb: ${deepseekResult.proverb}`;
 
           alert(results);
-          
+
           try {
             await navigator.clipboard.writeText(results);
             alert('Results copied to clipboard!');
@@ -282,7 +282,8 @@ function VoiceRecorderScreen() {
           summary: aiResult.summary, 
           transcription: transcribedText,
           model: aiResult.model || 'GPT-3.5',
-          success: aiResult.success || false
+          success: aiResult.success || false,
+          tokens: aiResult.tokens || {total: 0} //Added to handle potential missing tokens
         });
     } catch (error) {
       console.error("Error generating title and summary:", error);
@@ -400,6 +401,9 @@ function VoiceRecorderScreen() {
         title={modalData.title}
         summary={modalData.summary}
         transcription={modalData.transcription}
+        model={modalData.model}
+        success={modalData.success}
+        tokens={modalData.tokens}
       />
     </div>
   );
@@ -590,7 +594,7 @@ export default function App() {
   );
 }
 
-function AIResultModal({ isOpen, onClose, title = '', summary = '', transcription = '', model = 'GPT-3.5', success = false }) {
+function AIResultModal({ isOpen, onClose, title = '', summary = '', transcription = '', model = 'GPT-3.5', success = false, tokens = {total: 0} }) {
   if (!isOpen) return null;
 
   const copyToClipboard = async (text, type) => {
@@ -609,6 +613,7 @@ AI Generated Results
 ------------------
 Model Used: ${model}
 AI Processing: ${success ? 'Successful' : 'Failed'}
+Tokens Used: ${tokens.total}
 
 Title:
 ${title}
@@ -634,11 +639,17 @@ ${transcription}
       <div className="modal-content" onClick={e => e.stopPropagation()}>
         <h2 className="modal-title">AI Generated Results</h2>
         <div className="modal-info">
-          <p>Model Used: {model}</p>
-          <p>AI Processing: {success ? 'Successful' : 'Failed'}</p>
+          <div className="ai-status">
+            <p className="model-info">Model Used: {model}</p>
+            <p className="model-info">AI Processing: {success ? 'Successful' : 'Failed'}</p>
+            <p className="token-info">Tokens Used: {tokens.total}</p>
+          </div>
           <button className="copy-all-button" onClick={copyAllResults}>
             Copy All Results
           </button>
+          <p className="encouraging-message">
+            You've got a great idea here!  This is a fantastic start. Keep up the amazing work!
+          </p>
         </div>
         <div className="modal-section">
           <div className="section-header">
@@ -693,7 +704,7 @@ async function generateTitleAndSummary(text) {
       )
       .join(' ')
       .trim();
-      
+
     const result = await import('./ai-service').then(module => 
       module.generateTitleAndSummary(cleanedText)
     );
