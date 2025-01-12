@@ -248,7 +248,7 @@ function VoiceRecorderScreen() {
                     const transcriptionsRef = collection(db, 'transcriptions');
                     await deleteDoc(doc(transcriptionsRef, item.id));
                     setSavedTranscriptions(prev => prev.filter(t => t.id !== item.id));
-                    alert('Task created! Check the Task List.');
+                    alert('Task created and moved to Task List!');
                   } catch (error) {
                     console.error("Error converting task:", error);
                     alert('Error creating task. Please try again.');
