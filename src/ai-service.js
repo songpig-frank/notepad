@@ -67,25 +67,41 @@ export const generateTitleAndSummary = async (text) => {
   }
 
   try {
+    if (!config.deepseek.apiKey && !config.openai.apiKey) {
+      throw new Error('Please configure API keys in Replit Secrets (REACT_APP_OPENAI_API_KEY or REACT_APP_DEEPSEEK_API_KEY)');
+    }
+
+    let error = null;
+    
     if (config.deepseek.apiKey) {
-      const result = await getDeepSeekTitle(text);
-      if (result?.title) return result;
+      try {
+        const result = await getDeepSeekTitle(text);
+        if (result?.title) return result;
+      } catch (e) {
+        error = e;
+      }
     }
     
     if (config.openai.apiKey) {
-      const openAIResult = await getOpenAITitle(text);
-      if (openAIResult?.title) return openAIResult;
+      try {
+        const result = await getOpenAITitle(text);
+        if (result?.title) return result;
+      } catch (e) {
+        error = e;
+      }
     }
+
+    // Create meaningful title and summary from the text
+    const sentences = text.split(/[.!?]+/).filter(s => s.trim());
+    const firstSentence = sentences[0]?.trim() || text.trim();
+    const title = firstSentence.length > 50 ? 
+      firstSentence.substring(0, 47) + '...' : 
+      firstSentence;
     
-    if (!config.deepseek.apiKey && !config.openai.apiKey) {
-      throw new Error('No API keys configured. Please add API keys in Replit Secrets.');
-    }
-    
-    // Fallback if both APIs fail
-    return {
-      title: text.split('.')[0].substring(0, 50),
-      summary: text.substring(0, 100)
-    };
+    const remainingSentences = sentences.slice(1, 3).join('. ');
+    const summary = remainingSentences || firstSentence;
+
+    return { title, summary };
   } catch (error) {
     console.error('Error in AI service:', error);
     throw error;
