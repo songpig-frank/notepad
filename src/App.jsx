@@ -782,14 +782,28 @@ ${transcription}
 
 async function generateTitleAndSummary(text) {
   try {
-    // Clean up repeated fragments from speech recognition
+    // Enhanced cleanup for speech recognition text
     const cleanedText = text
       .split(/\s+/)
-      .filter((word, index, array) => 
-        index === array.lastIndexOf(word) || 
-        array[index + 1] !== word
-      )
+      // Remove consecutive duplicate words and phrases
+      .reduce((acc, word, index, array) => {
+        const prevThreeWords = acc.slice(-3).join(' ');
+        const nextThreeWords = array.slice(index, index + 3).join(' ');
+        
+        // Skip if word is part of a repeated phrase
+        if (prevThreeWords.includes(nextThreeWords) && nextThreeWords.length > 5) {
+          return acc;
+        }
+        
+        // Skip consecutive duplicate words
+        if (acc[acc.length - 1] === word) {
+          return acc;
+        }
+        
+        return [...acc, word];
+      }, [])
       .join(' ')
+      .replace(/\s+/g, ' ')
       .trim();
 
     const result = await import('./ai-service').then(module => 
