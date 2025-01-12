@@ -604,39 +604,7 @@ function TaskListScreen() {
                 />
                 <div className="task-description">{task.description}</div>
               </div>
-              <div 
-                className="task-menu-dots"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  setTasks(tasks.map(t => 
-                    t.id === task.id ? { ...t, menuOpen: !t.menuOpen } : { ...t, menuOpen: false }
-                  ));
-                }}
-              >
-                ⋮
-              </div>
-              {task.menuOpen && (
-                <div className="task-menu">
-                  <button onClick={() => toggleTask(task.id)}>
-                    {task.completed ? '↩️ Mark Incomplete' : '✓ Mark Complete'}
-                  </button>
-                  <button onClick={async () => {
-                    const taskRef = doc(db, 'tasks', task.id);
-                    await updateDoc(taskRef, { urgent: !task.urgent });
-                    setTasks(tasks.map(t => 
-                      t.id === task.id ? { ...t, urgent: !t.urgent, menuOpen: false } : t
-                    ));
-                  }}>
-                    {task.urgent ? '📅 Remove Urgent' : '🚨 Mark Urgent'}
-                  </button>
-                  <button onClick={() => {
-                    setDeleteConfirmation({ show: true, taskId: task.id });
-                  }}>
-                    🗑️ Delete
-                  </button>
-                </div>
-              )}
-                <div className="task-content">
+              <div className="task-content">
                 <div className="task-id">ID: {task.julianId}</div>
                 {task.expanded && (
                   <div className="requirements-section">
@@ -697,6 +665,38 @@ function TaskListScreen() {
                   )}
                 </div>
               </div>
+              <div 
+                className="task-menu-dots"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setTasks(tasks.map(t => 
+                    t.id === task.id ? { ...t, menuOpen: !t.menuOpen } : { ...t, menuOpen: false }
+                  ));
+                }}
+              >
+                ⋮
+              </div>
+              {task.menuOpen && (
+                <div className="task-menu">
+                  <button onClick={() => toggleTask(task.id)}>
+                    {task.completed ? '↩️ Mark Incomplete' : '✓ Mark Complete'}
+                  </button>
+                  <button onClick={async () => {
+                    const taskRef = doc(db, 'tasks', task.id);
+                    await updateDoc(taskRef, { urgent: !task.urgent });
+                    setTasks(tasks.map(t => 
+                      t.id === task.id ? { ...t, urgent: !task.urgent, menuOpen: false } : t
+                    ));
+                  }}>
+                    {task.urgent ? '📅 Remove Urgent' : '🚨 Mark Urgent'}
+                  </button>
+                  <button onClick={() => {
+                    setDeleteConfirmation({ show: true, taskId: task.id });
+                  }}>
+                    🗑️ Delete
+                  </button>
+                </div>
+              )}
               <div className="task-actions-wrapper">
                 <div className="task-actions">
                   <button 
