@@ -697,21 +697,23 @@ function TaskListScreen() {
                   </div>
                 </div>
               </div>
-              <button 
-                onClick={async () => {
-                  const taskRef = doc(db, 'tasks', task.id);
-                  await updateDoc(taskRef, { urgent: !task.urgent });
-                  setTasks(tasks.map(t => 
-                    t.id === task.id ? { ...t, urgent: !t.urgent } : t
-                  ));
-                }} 
-                className={`urgent-button ${task.urgent ? 'active' : ''}`}
-              >
-                Urgent
-              </button>
-              <button onClick={() => deleteTask(task.id)} className="delete-button">
-                Delete
-              </button>
+              <div className="task-actions">
+                <button 
+                  onClick={async () => {
+                    const taskRef = doc(db, 'tasks', task.id);
+                    await updateDoc(taskRef, { urgent: !task.urgent });
+                    setTasks(tasks.map(t => 
+                      t.id === task.id ? { ...t, urgent: !t.urgent } : t
+                    ));
+                  }} 
+                  className={`urgent-button ${task.urgent ? 'active' : ''}`}
+                >
+                  Urgent
+                </button>
+                <button onClick={() => deleteTask(task.id)} className="delete-button">
+                  Delete
+                </button>
+              </div>
             </div>
           ))}
         </div>
