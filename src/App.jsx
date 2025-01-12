@@ -480,15 +480,15 @@ export default function App() {
 }
 
 async function generateTitleAndSummary(text) {
-  // Implement your AI title and summary generation logic here using OpenAI or DeepSeek API
-  // Replace this with actual API calls and error handling
-
-  // Example using a placeholder:
-  await new Promise(resolve => setTimeout(resolve, 500)); // Simulate API call delay
-
-  return {
-    title: `AI-Generated Title: ${text.split('.')[0]}`,
-    summary: `AI-Generated Summary: ${text.substring(0, 100)}`
-  };
-
+  try {
+    const result = await generateTitleAndSummary(text);
+    return result;
+  } catch (error) {
+    console.error('Error generating title and summary:', error);
+    // Fallback to basic title/summary if AI fails
+    return {
+      title: text.split('.')[0],
+      summary: text.substring(0, 100)
+    };
+  }
 }
