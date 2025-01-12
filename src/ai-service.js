@@ -25,14 +25,21 @@ async function getOpenAITitle(text) {
   }
 
   const data = await response.json();
-  const result = data.choices[0]?.message?.content;
+  const result = data.choices[0]?.message?.content || '';
   
-  // Split into title and summary
-  const parts = result.split('\n').filter(p => p.trim());
+  // Extract title and summary with fallbacks
+  const lines = result.split('\n').filter(p => p.trim());
+  const title = lines.find(l => l.toLowerCase().includes('title:'))?.replace('Title:', '').trim() 
+    || text.split('.')[0].trim() 
+    || 'Untitled';
+  const summary = lines.find(l => l.toLowerCase().includes('summary:'))?.replace('Summary:', '').trim() 
+    || text.substring(0, 100).trim() 
+    || 'No summary available';
+
   return {
-    title: parts[0]?.replace('Title:', '').trim() || 'Untitled',
-    summary: parts[1]?.replace('Summary:', '').trim() || text.substring(0, 100),
-    model: 'GPT-3.5',
+    title,
+    summary,
+    model: 'GPT-3.5-turbo',
     success: true
   };
 }

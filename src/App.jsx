@@ -516,7 +516,7 @@ export default function App() {
   );
 }
 
-function AIResultModal({ isOpen, onClose, title, summary, transcription, model, success }) {
+function AIResultModal({ isOpen, onClose, title = '', summary = '', transcription = '', model = 'GPT-3.5', success = false }) {
   if (!isOpen) return null;
 
   const copyToClipboard = async (text, type) => {
