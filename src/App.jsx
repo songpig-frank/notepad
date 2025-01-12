@@ -448,7 +448,7 @@ function TaskListScreen() {
   };
 
   const [isProcessing, setIsProcessing] = React.useState(false);
-  
+
   const addTask = async (e) => {
     e.preventDefault();
     if (newTask.trim()) {
@@ -696,23 +696,24 @@ function TaskListScreen() {
                     )}
                   </div>
                 </div>
-              </div>
-              <div className="task-actions">
-                <button 
-                  onClick={async () => {
-                    const taskRef = doc(db, 'tasks', task.id);
-                    await updateDoc(taskRef, { urgent: !task.urgent });
-                    setTasks(tasks.map(t => 
-                      t.id === task.id ? { ...t, urgent: !t.urgent } : t
-                    ));
-                  }} 
-                  className={`urgent-button ${task.urgent ? 'active' : ''}`}
-                >
-                  Urgent
-                </button>
-                <button onClick={() => deleteTask(task.id)} className="delete-button">
-                  Delete
-                </button>
+              <div className="task-actions-wrapper">
+                <div className="task-actions">
+                  <button 
+                    onClick={async () => {
+                      const taskRef = doc(db, 'tasks', task.id);
+                      await updateDoc(taskRef, { urgent: !task.urgent });
+                      setTasks(tasks.map(t => 
+                        t.id === task.id ? { ...t, urgent: !task.urgent } : t
+                      ));
+                    }} 
+                    className={`urgent-button ${task.urgent ? 'active' : ''}`}
+                  >
+                    Urgent
+                  </button>
+                  <button onClick={() => deleteTask(task.id)} className="delete-button">
+                    Delete
+                  </button>
+                </div>
               </div>
             </div>
           ))}
@@ -842,17 +843,17 @@ async function generateTitleAndSummary(text) {
       .reduce((acc, word, index, array) => {
         const prevThreeWords = acc.slice(-3).join(' ');
         const nextThreeWords = array.slice(index, index + 3).join(' ');
-        
+
         // Skip if word is part of a repeated phrase
         if (prevThreeWords.includes(nextThreeWords) && nextThreeWords.length > 5) {
           return acc;
         }
-        
+
         // Skip consecutive duplicate words
         if (acc[acc.length - 1] === word) {
           return acc;
         }
-        
+
         return [...acc, word];
       }, [])
       .join(' ')
