@@ -547,7 +547,6 @@ ${transcription}
       alert('Failed to copy to clipboard');
     }
   };
-  };
 
   return (
     <div className="modal-overlay" onClick={onClose}>
