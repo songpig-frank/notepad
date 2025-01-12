@@ -6,12 +6,36 @@ import { collection, addDoc, getDocs, deleteDoc, doc, updateDoc } from 'firebase
 import './App.css';
 
 function HomeScreen() {
+  const [openAIStatus, setOpenAIStatus] = React.useState(null);
+
+  const testOpenAI = async () => {
+    try {
+      const result = await import('./ai-service').then(module => module.testOpenAIConnection());
+      setOpenAIStatus(result);
+      
+      if (result.success) {
+        alert(`Connection Successful!\nProverb: ${result.proverb}`);
+      } else {
+        const errorMessage = `Connection Failed!\nError: ${result.error}`;
+        alert(errorMessage);
+        await navigator.clipboard.writeText(errorMessage);
+      }
+    } catch (error) {
+      const errorMessage = `Test Failed!\nError: ${error.message}`;
+      alert(errorMessage);
+      await navigator.clipboard.writeText(errorMessage);
+    }
+  };
+
   return (
     <div className="container">
       <img src={logo} alt="ADHD Pad" className="logo" />
       <div className="domain-name">ADHDPad.com</div>
       <h1 className="title">Turn Your Ideas into Action</h1>
       <p className="subtitle">Capture, organize, and complete tasks with ADHD Pad</p>
+      <button onClick={testOpenAI} className="test-ai-button">
+        Test OpenAI Connection
+      </button>
       <div className="buttonContainer">
         <Link to="/voice-recorder" className="button">
           <span className="buttonText">Voice Recorder</span>

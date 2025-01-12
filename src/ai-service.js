@@ -44,6 +44,41 @@ async function getOpenAITitle(text) {
   };
 }
 
+export async function testOpenAIConnection() {
+  try {
+    const response = await fetch('https://api.openai.com/v1/chat/completions', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${config.openai.apiKey}`
+      },
+      body: JSON.stringify({
+        model: 'gpt-3.5-turbo',
+        messages: [{
+          role: 'system',
+          content: 'You are a wise assistant. Share a short proverb for the day.'
+        }, {
+          role: 'user',
+          content: 'Share a proverb for today.'
+        }]
+      })
+    });
+
+    const data = await response.json();
+    return {
+      success: response.ok,
+      proverb: data.choices?.[0]?.message?.content || 'No proverb available',
+      error: response.ok ? null : data.error?.message
+    };
+  } catch (error) {
+    return {
+      success: false,
+      proverb: null,
+      error: error.message
+    };
+  }
+}
+
 export async function generateTitleAndSummary(text) {
   if (!config.openai.apiKey) {
     throw new Error('OpenAI API key not configured');
