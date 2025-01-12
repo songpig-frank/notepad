@@ -44,6 +44,48 @@ async function getOpenAITitle(text) {
   };
 }
 
+async function testDeepSeekConnection() {
+  try {
+    const response = await fetch(config.deepseek.endpoint, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${config.deepseek.apiKey}`
+      },
+      body: JSON.stringify({
+        model: config.deepseek.model,
+        messages: [{
+          role: 'system',
+          content: 'You are a wise assistant. Share a short proverb for the day.'
+        }, {
+          role: 'user',
+          content: 'Share a proverb for today.'
+        }]
+      })
+    });
+
+    const data = await response.json();
+    return {
+      success: response.ok,
+      proverb: data.choices?.[0]?.message?.content || 'No proverb available',
+      error: response.ok ? null : (data.error?.message || 'API request failed'),
+      model: data.model || config.deepseek.model,
+      tokens: {
+        total: data.usage?.total_tokens || 0,
+        prompt: data.usage?.prompt_tokens || 0,
+        completion: data.usage?.completion_tokens || 0
+      }
+    };
+  } catch (error) {
+    return {
+      success: false,
+      proverb: null,
+      error: error.message,
+      model: config.deepseek.model
+    };
+  }
+}
+
 export async function testOpenAIConnection() {
   try {
     const response = await fetch('https://api.openai.com/v1/chat/completions', {
