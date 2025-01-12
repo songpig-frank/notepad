@@ -625,6 +625,7 @@ audio {
   display: block;
   box-sizing: border-box;
   max-width: 100%;
+  text-align: center;
 }
 
 .task-title:hover,
