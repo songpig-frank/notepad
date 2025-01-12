@@ -681,6 +681,30 @@ audio {
   flex-grow: 1;
 }
 
+.requirements-section {
+  margin-top: 15px;
+  padding: 15px;
+  background: #f8f9fa;
+  border: 1px dashed #dee2e6;
+  border-radius: 4px;
+}
+
+.requirements-title {
+  font-weight: 600;
+  color: #495057;
+  margin-bottom: 10px;
+}
+
+.requirements-input {
+  width: 100%;
+  min-height: 60px;
+  padding: 8px;
+  border: 1px solid #ced4da;
+  border-radius: 4px;
+  margin-bottom: 10px;
+  resize: vertical;
+}
+
 .task-actions {
   display: none; /*Removed button*/
   align-items: center;

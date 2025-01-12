@@ -639,6 +639,24 @@ function TaskListScreen() {
                 <div className="task-content">
                 <div className="task-id">ID: {task.julianId}</div>
                 {task.expanded && (
+                  <div className="requirements-section">
+                    <div className="requirements-title">Requirements</div>
+                    <textarea
+                      className="requirements-input"
+                      value={task.requirements || ''}
+                      placeholder="Enter task requirements..."
+                      onChange={async (e) => {
+                        const newRequirements = e.target.value;
+                        const taskRef = doc(db, 'tasks', task.id);
+                        await updateDoc(taskRef, { requirements: newRequirements });
+                        setTasks(tasks.map(t => 
+                          t.id === task.id ? { ...t, requirements: newRequirements } : t
+                        ));
+                      }}
+                    />
+                  </div>
+                )}
+                {task.expanded && (
                   <>
                     <textarea
                       className="task-full-text-input"
