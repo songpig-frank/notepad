@@ -18,12 +18,22 @@ function HomeScreen() {
       } else {
         const errorMessage = `Connection Failed!\nError: ${result.error}`;
         alert(errorMessage);
-        await navigator.clipboard.writeText(errorMessage);
+        try {
+          await navigator.clipboard.writeText(errorMessage);
+        } catch (clipboardError) {
+          console.error('Clipboard access denied:', clipboardError);
+          alert('Note: Could not copy to clipboard. Please ensure clipboard permissions are enabled.');
+        }
       }
     } catch (error) {
       const errorMessage = `Test Failed!\nError: ${error.message}`;
       alert(errorMessage);
-      await navigator.clipboard.writeText(errorMessage);
+      try {
+        await navigator.clipboard.writeText(errorMessage);
+      } catch (clipboardError) {
+        console.error('Clipboard access denied:', clipboardError);
+        alert('Note: Could not copy to clipboard. Please ensure clipboard permissions are enabled.');
+      }
     }
   };
 

@@ -68,7 +68,7 @@ export async function testOpenAIConnection() {
     return {
       success: response.ok,
       proverb: data.choices?.[0]?.message?.content || 'No proverb available',
-      error: response.ok ? null : data.error?.message
+      error: response.ok ? null : (data.error?.message || 'API request failed')
     };
   } catch (error) {
     return {
