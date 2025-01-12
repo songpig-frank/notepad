@@ -412,6 +412,7 @@ function TaskListScreen() {
   const [tasks, setTasks] = React.useState([]);
   const [newTask, setNewTask] = React.useState('');
   const [searchQuery, setSearchQuery] = React.useState('');
+  const [deleteConfirmation, setDeleteConfirmation] = React.useState({ show: false, taskId: null });
 
   const filteredTasks = tasks.filter(task => 
     task.text?.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -505,6 +506,11 @@ function TaskListScreen() {
     } catch (error) {
       console.error("Error deleting task:", error);
     }
+  };
+
+  const confirmDelete = async () => {
+    await deleteTask(deleteConfirmation.taskId);
+    setDeleteConfirmation({ show: false, taskId: null });
   };
 
   return (
@@ -622,7 +628,7 @@ function TaskListScreen() {
                     {task.urgent ? '📅 Remove Urgent' : '🚨 Mark Urgent'}
                   </button>
                   <button onClick={() => {
-                    deleteTask(task.id);
+                    setDeleteConfirmation({ show: true, taskId: task.id });
                   }}>
                     🗑️ Delete
                   </button>
@@ -703,14 +709,14 @@ function TaskListScreen() {
                       const taskRef = doc(db, 'tasks', task.id);
                       await updateDoc(taskRef, { urgent: !task.urgent });
                       setTasks(tasks.map(t => 
-                        t.id === task.id ? { ...t, urgent: !task.urgent } : t
+                        t.id === task.id ? { ...t, urgent: !t.urgent } : t
                       ));
                     }} 
                     className={`urgent-button ${task.urgent ? 'active' : ''}`}
                   >
                     Urgent
                   </button>
-                  <button onClick={() => deleteTask(task.id)} className="delete-button">
+                  <button onClick={() => setDeleteConfirmation({ show: true, taskId: task.id })} className="delete-button">
                     Delete
                   </button>
                 </div>
@@ -719,6 +725,22 @@ function TaskListScreen() {
           ))}
         </div>
       </div>
+      {deleteConfirmation.show && (
+        <div className="confirmation-dialog">
+          <div className="confirmation-content">
+            <p>Are you sure you want to delete this task?</p>
+            <div className="confirmation-actions">
+              <button onClick={confirmDelete} className="confirm-btn">Delete</button>
+              <button 
+                onClick={() => setDeleteConfirmation({ show: false, taskId: null })} 
+                className="cancel-btn"
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
