@@ -562,6 +562,19 @@ function TaskListScreen() {
                   checked={task.completed}
                   onChange={() => toggleTask(task.id)}
                 />
+                {task.completed && (
+                  <button 
+                    className="copy-complete-button"
+                    onClick={() => {
+                      const taskText = `Task: ${task.title}\nDescription: ${task.description}\nCompleted: ${new Date().toLocaleString()}`;
+                      navigator.clipboard.writeText(taskText)
+                        .then(() => alert('Completed task copied!'))
+                        .catch(err => console.error('Failed to copy:', err));
+                    }}
+                  >
+                    📋 Copy Complete Task
+                  </button>
+                )}
                 <div className="task-content">
                   <div className="task-id">{task.julianId}</div>
                   <input
