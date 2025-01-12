@@ -559,45 +559,26 @@ function TaskListScreen() {
                   <button 
                     className="copy-button"
                     onClick={() => {
-                      const taskText = `Task ID: ${task.julianId}\nTitle: ${task.title}\nDescription: ${task.description}\nStatus: ${task.completed ? 'Completed' : 'Pending'}\nCreated: ${task.createdAt}`;
-                      navigator.clipboard.writeText(taskText)
-                        .then(() => alert('Task copied!'))
-                        .catch(err => console.error('Failed to copy:', err));
+                      const taskDetails = `Task ID: ${task.julianId}\nTitle: ${task.title}\nDescription: ${task.description}\nStatus: ${task.completed ? 'Completed' : 'Pending'}\nUrgency: ${task.urgent ? 'Urgent' : 'Normal'}\nCreated: ${task.createdAt}`;
+                      navigator.clipboard.writeText(taskDetails);
+                      alert('Task details copied to clipboard!');
                     }}
                   >
                     📋 Copy
                   </button>
-                  <div className="email-container">
-                    <input
-                      type="email"
-                      placeholder="Enter email"
-                      value={task.emailTo || ''}
-                      onChange={async (e) => {
-                        const taskRef = doc(db, 'tasks', task.id);
-                        await updateDoc(taskRef, { emailTo: e.target.value });
-                        setTasks(tasks.map(t => 
-                          t.id === task.id ? { ...t, emailTo: e.target.value } : t
-                        ));
-                      }}
-                    />
-                    <button 
-                      className="email-button"
-                      onClick={() => {
-                        if (!task.emailTo) {
-                          alert('Please enter an email address');
-                          return;
-                        }
-                        const taskText = `Task ID: ${task.julianId}\nTitle: ${task.title}\nDescription: ${task.description}\nStatus: ${task.completed ? 'Completed' : 'Pending'}\nCreated: ${task.createdAt}`;
-                        const mailtoLink = `mailto:${task.emailTo}?subject=${encodeURIComponent('Task Details')}&body=${encodeURIComponent(taskText)}`;
-                        window.location.href = mailtoLink;
-                      }}
-                    >
-                      📧 Email
-                    </button>
-                  </div>
+                  <button 
+                    className="email-button"
+                    onClick={() => {
+                      const taskDetails = `Task ID: ${task.julianId}\nTitle: ${task.title}\nDescription: ${task.description}\nStatus: ${task.completed ? 'Completed' : 'Pending'}\nUrgency: ${task.urgent ? 'Urgent' : 'Normal'}\nCreated: ${task.createdAt}`;
+                      const mailtoLink = `mailto:?subject=Task Details - ${task.title}&body=${encodeURIComponent(taskDetails)}`;
+                      window.location.href = mailtoLink;
+                    }}
+                  >
+                    📧 Email
+                  </button>
                 </div>
                 <div className="task-content">
-                  <div className="task-id">{task.julianId}</div>
+                  <div className="task-id">ID: {task.julianId}</div>
                   <input
                     type="text"
                     className="task-title-input"
