@@ -436,17 +436,36 @@ function TaskListScreen() {
     fetchTasks();
   }, []);
 
+  const generateJulianId = () => {
+    const now = new Date();
+    const start = new Date(now.getFullYear(), 0, 0);
+    const diff = now - start;
+    const oneDay = 1000 * 60 * 60 * 24;
+    const day = Math.floor(diff / oneDay);
+    const time = now.getHours().toString().padStart(2, '0') + 
+                 now.getMinutes().toString().padStart(2, '0') +
+                 now.getSeconds().toString().padStart(2, '0');
+    return `${now.getFullYear()}${day.toString().padStart(3, '0')}${time}`;
+  };
+
   const addTask = async (e) => {
     e.preventDefault();
     if (newTask.trim()) {
       try {
         const sentences = newTask.split(/[.!?]+/);
-        const title = sentences[0].length > 50 ? 
+        let title = sentences[0].length > 50 ? 
           sentences[0].substring(0, 50) + '...' : 
           sentences[0];
-        const description = sentences.slice(1).join('. ').trim() || title;
+        let description = sentences.slice(1).join('. ').trim() || title;
+        
+        // If coming from AI summary, use those instead
+        if (modalData?.isOpen) {
+          title = modalData.title;
+          description = modalData.summary;
+        }
 
         const taskRef = await addDoc(collection(db, 'tasks'), {
+          julianId: generateJulianId(),
           title,
           description,
           text: newTask,
@@ -543,20 +562,61 @@ function TaskListScreen() {
                   checked={task.completed}
                   onChange={() => toggleTask(task.id)}
                 />
-                <div className="task-content" onClick={() => {
-                  const updatedTasks = tasks.map(t => 
-                    t.id === task.id ? { ...t, expanded: !t.expanded } : t
-                  );
-                  setTasks(updatedTasks);
-                }}>
-                  <h4 className="task-title">{task.title}</h4>
+                <div className="task-content">
+                  <div className="task-id">{task.julianId}</div>
+                  <input
+                    type="text"
+                    className="task-title-input"
+                    value={task.title}
+                    onChange={async (e) => {
+                      const newTitle = e.target.value;
+                      const taskRef = doc(db, 'tasks', task.id);
+                      await updateDoc(taskRef, { title: newTitle });
+                      setTasks(tasks.map(t => 
+                        t.id === task.id ? { ...t, title: newTitle } : t
+                      ));
+                    }}
+                  />
                   {task.expanded && (
                     <>
-                      {task.description && <p className="task-description">{task.description}</p>}
-                      <p className="task-full-text">{task.text}</p>
+                      <textarea
+                        className="task-description-input"
+                        value={task.description}
+                        onChange={async (e) => {
+                          const newDesc = e.target.value;
+                          const taskRef = doc(db, 'tasks', task.id);
+                          await updateDoc(taskRef, { description: newDesc });
+                          setTasks(tasks.map(t => 
+                            t.id === task.id ? { ...t, description: newDesc } : t
+                          ));
+                        }}
+                      />
+                      <textarea
+                        className="task-full-text-input"
+                        value={task.text}
+                        onChange={async (e) => {
+                          const newText = e.target.value;
+                          const taskRef = doc(db, 'tasks', task.id);
+                          await updateDoc(taskRef, { text: newText });
+                          setTasks(tasks.map(t => 
+                            t.id === task.id ? { ...t, text: newText } : t
+                          ));
+                        }}
+                      />
                       <small>{task.createdAt}</small>
                     </>
                   )}
+                  <button 
+                    className="expand-button"
+                    onClick={() => {
+                      const updatedTasks = tasks.map(t => 
+                        t.id === task.id ? { ...t, expanded: !t.expanded } : t
+                      );
+                      setTasks(updatedTasks);
+                    }}
+                  >
+                    {task.expanded ? 'Collapse' : 'Expand'}
+                  </button>
                 </div>
               </div>
               <button 

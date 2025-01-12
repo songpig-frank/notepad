@@ -450,16 +450,52 @@ audio {
   flex: 1;
 }
 
-.task-title {
+.task-id {
+  font-size: 0.8em;
+  color: #666;
+  margin-bottom: 5px;
+}
+
+.task-title-input {
+  width: 100%;
   margin: 0;
   font-size: 1.1em;
   color: #333;
+  border: 1px solid transparent;
+  padding: 4px;
+  border-radius: 4px;
 }
 
-.task-description {
-  margin: 5px 0 0;
+.task-title-input:hover,
+.task-title-input:focus {
+  border-color: #ddd;
+  outline: none;
+}
+
+.task-description-input,
+.task-full-text-input {
+  width: 100%;
+  margin: 5px 0;
   font-size: 0.9em;
   color: #666;
+  border: 1px solid #ddd;
+  padding: 8px;
+  border-radius: 4px;
+  min-height: 60px;
+  resize: vertical;
+}
+
+.expand-button {
+  background: transparent;
+  border: 1px solid #ddd;
+  padding: 4px 8px;
+  border-radius: 4px;
+  margin-top: 5px;
+  cursor: pointer;
+}
+
+.expand-button:hover {
+  background: #f5f5f5;
 }
 
 .delete-button {
