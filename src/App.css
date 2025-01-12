@@ -644,8 +644,12 @@ audio {
   line-height: 1.6;
   margin-bottom: 12px;
   max-height: 80px;
-  overflow: hidden;
-  transition: max-height 0.3s ease;
+  overflow-y: auto;
+  overflow-x: auto;
+  text-align: justify;
+  padding: 8px;
+  white-space: normal;
+  word-wrap: break-word;
 }
 
 .task-description.expanded {
