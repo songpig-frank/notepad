@@ -27,6 +27,32 @@ function HomeScreen() {
 
 function VoiceRecorderScreen() {
   const [isRecording, setIsRecording] = React.useState(false);
+  
+  const clearAll = async () => {
+    if (window.confirm('Are you sure you want to delete all transcriptions and tasks? This cannot be undone.')) {
+      try {
+        const transcriptionsSnapshot = await getDocs(collection(db, 'transcriptions'));
+        const tasksSnapshot = await getDocs(collection(db, 'tasks'));
+        
+        // Delete all transcriptions
+        const transcriptionDeletes = transcriptionsSnapshot.docs.map(doc => 
+          deleteDoc(doc.ref)
+        );
+        
+        // Delete all tasks
+        const taskDeletes = tasksSnapshot.docs.map(doc => 
+          deleteDoc(doc.ref)
+        );
+        
+        await Promise.all([...transcriptionDeletes, ...taskDeletes]);
+        setSavedTranscriptions([]);
+        alert('All transcriptions and tasks have been cleared!');
+      } catch (error) {
+        console.error("Error clearing data:", error);
+        alert('Error clearing data. Please try again.');
+      }
+    }
+  };
   const [audioURL, setAudioURL] = React.useState('');
   const [transcribedText, setTranscribedText] = React.useState('');
   const [savedTranscriptions, setSavedTranscriptions] = React.useState([]);
@@ -188,7 +214,10 @@ function VoiceRecorderScreen() {
   return (
     <div className="container">
       <Link to="/" className="back-button">← Back</Link>
-      <h1 className="title">Voice Recorder</h1>
+      <div className="header-container">
+        <h1 className="title">Voice Recorder</h1>
+        <button onClick={clearAll} className="clear-all-button">Clear All Data</button>
+      </div>
       <div className="recorder-controls">
         {!isRecording ? (
           <button className="button" onClick={startRecording}>
