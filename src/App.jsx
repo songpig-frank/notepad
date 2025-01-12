@@ -557,12 +557,12 @@ function TaskListScreen() {
           style={{ marginBottom: '10px' }}
         />
         <form onSubmit={addTask} className="task-form">
-          <input
-            type="text"
+          <textarea
             value={newTask}
             onChange={(e) => setNewTask(e.target.value)}
             placeholder="Enter a new task..."
             className="task-input"
+            rows="3"
           />
           <button type="submit" className="button">Add Task</button>
         </form>
