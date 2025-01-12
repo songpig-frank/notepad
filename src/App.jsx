@@ -452,17 +452,10 @@ function TaskListScreen() {
     e.preventDefault();
     if (newTask.trim()) {
       try {
-        const sentences = newTask.split(/[.!?]+/);
-        let title = sentences[0].length > 50 ? 
-          sentences[0].substring(0, 50) + '...' : 
-          sentences[0];
-        let description = sentences.slice(1).join('. ').trim() || title;
-        
-        // If coming from AI summary, use those instead
-        if (modalData?.isOpen) {
-          title = modalData.title;
-          description = modalData.summary;
-        }
+        // Generate title and summary using AI
+        const aiResults = await generateTitleAndSummary(newTask);
+        const title = aiResults.title || newTask.substring(0, 50);
+        const description = aiResults.summary || newTask;
 
         const taskRef = await addDoc(collection(db, 'tasks'), {
           julianId: generateJulianId(),
