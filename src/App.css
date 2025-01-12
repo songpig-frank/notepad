@@ -692,38 +692,7 @@ audio {
   flex-grow: 1;
 }
 
-.requirements-section {
-  margin-top: 15px;
-  padding: 15px;
-  background: #2c3e50;
-  border: 1px solid #34495e;
-  border-radius: 4px;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-}
 
-.requirements-title {
-  font-weight: 600;
-  color: #ecf0f1;
-  margin-bottom: 10px;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-}
-
-.requirements-input {
-  width: 100%;
-  min-height: 60px;
-  padding: 12px;
-  background: #34495e;
-  color: #ecf0f1;
-  border: 1px solid #445566;
-  border-radius: 4px;
-  margin-bottom: 10px;
-  resize: vertical;
-}
-
-.requirements-input::placeholder {
-  color: #95a5a6;
-}
 
 .task-actions {
   display: none; /*Removed button*/
