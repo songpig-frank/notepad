@@ -556,17 +556,77 @@ function TaskListScreen() {
                   onChange={() => toggleTask(task.id)}
                 />
                 {task.completed && (
-                  <button 
-                    className="copy-complete-button"
-                    onClick={() => {
-                      const taskText = `Task: ${task.title}\nDescription: ${task.description}\nCompleted: ${new Date().toLocaleString()}`;
-                      navigator.clipboard.writeText(taskText)
-                        .then(() => alert('Completed task copied!'))
-                        .catch(err => console.error('Failed to copy:', err));
-                    }}
-                  >
-                    📋 Copy Complete Task
-                  </button>
+                  <div className="task-actions">
+                    <button 
+                      className="copy-complete-button"
+                      onClick={() => {
+                        const taskText = `Task ID: ${task.julianId}\n` +
+                          `Title: ${task.title}\n` +
+                          `Description: ${task.description}\n` +
+                          `Status: ${task.completed ? 'Completed' : 'Pending'}\n` +
+                          `Urgency: ${task.urgent ? 'Urgent' : 'Normal'}\n` +
+                          `Created: ${task.createdAt}\n` +
+                          `Last Modified: ${new Date().toLocaleString()}`;
+                        navigator.clipboard.writeText(taskText)
+                          .then(() => alert('Task details copied!'))
+                          .catch(err => console.error('Failed to copy:', err));
+                      }}
+                    >
+                      📋 Copy Task Details
+                    </button>
+                    <div className="email-action">
+                      <input
+                        type="email"
+                        placeholder="Enter email"
+                        className="email-input"
+                        value={task.emailTo || ''}
+                        onChange={async (e) => {
+                          const newEmail = e.target.value;
+                          const taskRef = doc(db, 'tasks', task.id);
+                          await updateDoc(taskRef, { emailTo: newEmail });
+                          setTasks(tasks.map(t => 
+                            t.id === task.id ? { ...t, emailTo: newEmail } : t
+                          ));
+                        }}
+                      />
+                      <button 
+                        className="email-button"
+                        onClick={async () => {
+                          if (!task.emailTo) {
+                            alert('Please enter an email address');
+                            return;
+                          }
+                          const taskText = `Task ID: ${task.julianId}\n` +
+                            `Title: ${task.title}\n` +
+                            `Description: ${task.description}\n` +
+                            `Status: ${task.completed ? 'Completed' : 'Pending'}\n` +
+                            `Urgency: ${task.urgent ? 'Urgent' : 'Normal'}\n` +
+                            `Created: ${task.createdAt}\n` +
+                            `Last Modified: ${new Date().toLocaleString()}`;
+                          
+                          try {
+                            await fetch('/api/send-email', {
+                              method: 'POST',
+                              headers: {
+                                'Content-Type': 'application/json',
+                              },
+                              body: JSON.stringify({
+                                to: task.emailTo,
+                                subject: `Task Details: ${task.title}`,
+                                text: taskText
+                              })
+                            });
+                            alert('Email sent successfully!');
+                          } catch (error) {
+                            console.error('Failed to send email:', error);
+                            alert('Failed to send email. Please try again.');
+                          }
+                        }}
+                      >
+                        📧 Email Task
+                      </button>
+                    </div>
+                  </div>
                 )}
                 <div className="task-content">
                   <div className="task-id">{task.julianId}</div>

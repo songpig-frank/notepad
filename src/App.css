@@ -552,6 +552,43 @@ audio {
   background: #45a049;
 }
 
+.task-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-left: 8px;
+}
+
+.email-action {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.email-input {
+  padding: 4px 8px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 0.9em;
+}
+
+.email-button {
+  background: #2196F3;
+  color: white;
+  border: none;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 0.8em;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.email-button:hover {
+  background: #1976D2;
+}
+
 /* Scrollbar Styles */
 ::-webkit-scrollbar {
   width: 8px;
