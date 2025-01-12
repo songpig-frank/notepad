@@ -644,7 +644,19 @@ ${transcription}
 
 async function generateTitleAndSummary(text) {
   try {
-    const result = await import('./ai-service').then(module => module.generateTitleAndSummary(text));
+    // Clean up repeated fragments from speech recognition
+    const cleanedText = text
+      .split(/\s+/)
+      .filter((word, index, array) => 
+        index === array.lastIndexOf(word) || 
+        array[index + 1] !== word
+      )
+      .join(' ')
+      .trim();
+      
+    const result = await import('./ai-service').then(module => 
+      module.generateTitleAndSummary(cleanedText)
+    );
     return result;
   } catch (error) {
     console.error('Error generating title and summary:', error);
