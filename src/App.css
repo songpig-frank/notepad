@@ -616,13 +616,15 @@ audio {
   width: 100%;
   white-space: pre-wrap;
   overflow-wrap: break-word;
-  word-break: break-all;
+  word-break: break-word;
   resize: none;
   border: 1px solid transparent;
   border-radius: 4px;
   background: transparent;
   height: auto;
-  word-wrap: break-word;
+  display: block;
+  max-width: 100%;
+  box-sizing: border-box;
 }
 
 .task-title:hover,
