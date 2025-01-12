@@ -62,14 +62,8 @@ const getDeepSeekTitle = async (text) => {
   }
 };
 
-export const generateTitleAndSummary = async (text, preferredService = 'openai') => {
-  if (preferredService === 'openai') {
-    const result = await getOpenAITitle(text);
-    if (result) return result;
-    return await getDeepSeekTitle(text);
-  } else {
-    const result = await getDeepSeekTitle(text);
-    if (result) return result;
-    return await getOpenAITitle(text);
-  }
+export const generateTitleAndSummary = async (text) => {
+  const result = await getDeepSeekTitle(text);
+  if (result) return result;
+  return await getOpenAITitle(text);
 };
