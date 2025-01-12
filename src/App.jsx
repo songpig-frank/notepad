@@ -509,7 +509,7 @@ export default function App() {
   );
 }
 
-function AIResultModal({ isOpen, onClose, title, summary, transcription }) {
+function AIResultModal({ isOpen, onClose, title, summary, transcription, model, success }) {
   if (!isOpen) return null;
 
   const copyToClipboard = async (text, type) => {
@@ -522,10 +522,44 @@ function AIResultModal({ isOpen, onClose, title, summary, transcription }) {
     }
   };
 
+  const copyAllResults = async () => {
+    const allContent = `
+AI Generated Results
+------------------
+Model Used: ${model}
+AI Processing: ${success ? 'Successful' : 'Failed'}
+
+Title:
+${title}
+
+Summary:
+${summary}
+
+Full Transcription:
+${transcription}
+    `.trim();
+
+    try {
+      await navigator.clipboard.writeText(allContent);
+      alert('All results copied to clipboard!');
+    } catch (err) {
+      console.error('Failed to copy:', err);
+      alert('Failed to copy to clipboard');
+    }
+  };
+  };
+
   return (
     <div className="modal-overlay" onClick={onClose}>
       <div className="modal-content" onClick={e => e.stopPropagation()}>
         <h2 className="modal-title">AI Generated Results</h2>
+        <div className="modal-info">
+          <p>Model Used: {model}</p>
+          <p>AI Processing: {success ? 'Successful' : 'Failed'}</p>
+          <button className="copy-all-button" onClick={copyAllResults}>
+            Copy All Results
+          </button>
+        </div>
         <div className="modal-section">
           <div className="section-header">
             <h3>Generated Title</h3>
