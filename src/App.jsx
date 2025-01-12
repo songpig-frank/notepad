@@ -241,13 +241,17 @@ function VoiceRecorderScreen() {
                       createdAt: new Date().toLocaleString()
                     };
 
-                    // Add to Firestore tasks collection
-                    await addDoc(collection(db, 'tasks'), newTask);
-                    
-                    // Delete from transcriptions
+                    // Delete from transcriptions first
                     const transcriptionsRef = collection(db, 'transcriptions');
                     await deleteDoc(doc(transcriptionsRef, item.id));
-                    setSavedTranscriptions(prev => prev.filter(t => t.id !== item.id));
+                    
+                    // Update local state immediately
+                    setSavedTranscriptions(prevTranscriptions => 
+                      prevTranscriptions.filter(t => t.id !== item.id)
+                    );
+
+                    // Then add to tasks
+                    await addDoc(collection(db, 'tasks'), newTask);
                     alert('Task created and moved to Task List!');
                   } catch (error) {
                     console.error("Error converting task:", error);
