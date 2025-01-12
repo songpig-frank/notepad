@@ -638,7 +638,6 @@ function TaskListScreen() {
               )}
                 <div className="task-content">
                 <div className="task-id">ID: {task.julianId}</div>
-                <div className="task-description">{task.description}</div>
                 {task.expanded && (
                   <>
                     <textarea
