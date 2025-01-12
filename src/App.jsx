@@ -649,19 +649,6 @@ function TaskListScreen() {
               )}
                 <div className="task-content">
                   <div className="task-id">ID: {task.julianId}</div>
-                  <input
-                    type="text"
-                    className="task-title-input"
-                    value={task.title}
-                    onChange={async (e) => {
-                      const newTitle = e.target.value;
-                      const taskRef = doc(db, 'tasks', task.id);
-                      await updateDoc(taskRef, { title: newTitle });
-                      setTasks(tasks.map(t => 
-                        t.id === task.id ? { ...t, title: newTitle } : t
-                      ));
-                    }}
-                  />
                   {task.expanded && (
                     <>
                       <textarea

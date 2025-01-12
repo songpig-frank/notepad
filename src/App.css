@@ -689,21 +689,7 @@ audio {
 }
 
 
-.task-item .task-title-input {
-  width: 100%;
-  margin: 0;
-  font-size: 1.1em;
-  color: #333;
-  border: 1px solid transparent;
-  padding: 4px;
-  border-radius: 4px;
-}
 
-.task-item .task-title-input:hover,
-.task-item .task-title-input:focus {
-  border-color: #ddd;
-  outline: none;
-}
 
 
 .task-item .task-description-input,
