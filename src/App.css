@@ -531,7 +531,8 @@ audio {
 
 .task-menu-dots {
   position: absolute;
-  top: 12px;
+  top: 50%;
+  transform: translateY(-50%);
   right: 12px;
   padding: 4px;
   cursor: pointer;
