@@ -614,17 +614,17 @@ audio {
   padding: 8px;
   min-height: 70px;
   width: 100%;
-  white-space: normal;
-  overflow-wrap: anywhere;
-  word-break: break-word;
-  resize: none;
+  white-space: pre-line;
+  word-wrap: break-word;
+  word-break: break-all;
+  resize: vertical;
   border: 1px solid transparent;
   border-radius: 4px;
   background: transparent;
-  max-height: none;
-  overflow: visible;
   display: block;
   box-sizing: border-box;
+  overflow-y: auto;
+  max-width: calc(100% - 80px);
 }
 
 .task-title:hover,
