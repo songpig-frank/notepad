@@ -547,11 +547,13 @@ audio {
   top: 50%;
   transform: translateY(-50%);
   right: 12px;
-  padding: 4px;
+  padding: 4px 8px;
   cursor: pointer;
   border-radius: 4px;
   transition: background 0.2s;
   color: #666;
+  font-size: 24px;
+  font-weight: bold;
 }
 
 .task-menu-dots:hover {
