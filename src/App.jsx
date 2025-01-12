@@ -202,7 +202,14 @@ function VoiceRecorderScreen() {
       } finally {
         setIsLoading(false);
       }
-      setModalData({ isOpen: true, title: aiResult.title, summary: aiResult.summary, transcription: transcribedText });
+      setModalData({ 
+          isOpen: true, 
+          title: aiResult.title, 
+          summary: aiResult.summary, 
+          transcription: transcribedText,
+          model: aiResult.model || 'GPT-3.5',
+          success: aiResult.success || false
+        });
     } catch (error) {
       console.error("Error generating title and summary:", error);
       setError("AI processing failed. Please try again.");
