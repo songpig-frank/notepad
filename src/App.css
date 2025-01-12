@@ -612,7 +612,7 @@ audio {
   margin-bottom: 12px;
   line-height: 1.4;
   padding: 8px;
-  min-height: 50px;
+  min-height: 70px;
   width: 100%;
   white-space: pre-wrap;
   overflow-wrap: break-word;
@@ -620,6 +620,7 @@ audio {
   border: 1px solid transparent;
   border-radius: 4px;
   background: transparent;
+  height: auto;
 }
 
 .task-title:hover,
