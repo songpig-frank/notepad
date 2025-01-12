@@ -605,7 +605,7 @@ function TaskListScreen() {
                 <div className="task-subtitle-container">
                   <textarea
                     className="task-subtitle"
-                    value={task.subtitle || ''}
+                    value={task.title || ''}
                     placeholder="Enter subtitle..."
                     onChange={async (e) => {
                       const newSubtitle = e.target.value;
