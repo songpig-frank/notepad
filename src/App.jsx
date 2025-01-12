@@ -606,17 +606,29 @@ function TaskListScreen() {
                       <small>{task.createdAt}</small>
                     </>
                   )}
-                  <button 
-                    className="expand-button"
-                    onClick={() => {
-                      const updatedTasks = tasks.map(t => 
-                        t.id === task.id ? { ...t, expanded: !t.expanded } : t
-                      );
-                      setTasks(updatedTasks);
-                    }}
-                  >
-                    {task.expanded ? 'Collapse' : 'Expand'}
-                  </button>
+                  <div className="button-group">
+                    <button 
+                      className="expand-button"
+                      onClick={() => {
+                        const updatedTasks = tasks.map(t => 
+                          t.id === task.id ? { ...t, expanded: !t.expanded } : t
+                        );
+                        setTasks(updatedTasks);
+                      }}
+                    >
+                      {task.expanded ? 'Collapse' : 'Expand'}
+                    </button>
+                    {task.expanded && (
+                      <button 
+                        className="ai-assist-button"
+                        onClick={() => {
+                          alert('AI Assist: This feature will help break down your idea into actionable tasks. Coming soon!');
+                        }}
+                      >
+                        🤖 AI Assist
+                      </button>
+                    )}
+                  </div>
                 </div>
               </div>
               <button 

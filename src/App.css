@@ -498,6 +498,29 @@ audio {
   background: #f5f5f5;
 }
 
+.button-group {
+  display: flex;
+  gap: 8px;
+  margin-top: 5px;
+}
+
+.ai-assist-button {
+  background: #4a9eff;
+  color: white;
+  border: none;
+  padding: 4px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.9em;
+}
+
+.ai-assist-button:hover {
+  background: #3b8aea;
+}
+
 .delete-button {
   background: #ff4444;
   color: white;

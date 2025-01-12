@@ -29,12 +29,12 @@ async function getDeepSeekTitle(text) {
     const result = data.choices[0]?.message?.content || '';
     
     const lines = result.split('\n').filter(p => p.trim());
-    const title = lines.find(l => l.toLowerCase().includes('title:'))?.replace('Title:', '').trim() 
+    const title = (lines.find(l => l.toLowerCase().includes('title:'))?.replace('Title:', '').trim() 
       || text.split('.')[0].trim() 
-      || 'Untitled';
-    const summary = lines.find(l => l.toLowerCase().includes('summary:'))?.replace('Summary:', '').trim() 
+      || 'Untitled').replace(/^\*+\s*/, '');
+    const summary = (lines.find(l => l.toLowerCase().includes('summary:'))?.replace('Summary:', '').trim() 
       || text.substring(0, 100).trim() 
-      || 'No summary available';
+      || 'No summary available').replace(/^\*+\s*/, '');
 
     return {
       title,
