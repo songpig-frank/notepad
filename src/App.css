@@ -440,7 +440,6 @@ audio {
 }
 
 .task-header-actions {
-  display: none; /*Removed button*/
   position: absolute;
   top: 12px;
   right: 12px;
@@ -463,7 +462,6 @@ audio {
 }
 
 .task-menu-dots {
-  display: none; /*Removed button*/
   position: absolute;
   top: 50%;
   right: 16px;
@@ -479,7 +477,6 @@ audio {
 }
 
 .task-menu {
-  display: none; /*Removed button*/
   position: absolute;
   top: 16px;
   right: 16px;
