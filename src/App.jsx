@@ -412,7 +412,7 @@ function TaskListScreen() {
   const [tasks, setTasks] = React.useState([]);
   const [newTask, setNewTask] = React.useState('');
   const [searchQuery, setSearchQuery] = React.useState('');
-  
+
   React.useEffect(() => {
     const handleClickOutside = (event) => {
       if (!event.target.closest('.task-menu') && !event.target.closest('.task-menu-dots')) {
@@ -602,18 +602,7 @@ function TaskListScreen() {
                     ));
                   }}
                 />
-                <textarea
-                  className="task-description"
-                  value={task.description}
-                  onChange={async (e) => {
-                    const newDesc = e.target.value;
-                    const taskRef = doc(db, 'tasks', task.id);
-                    await updateDoc(taskRef, { description: newDesc });
-                    setTasks(tasks.map(t => 
-                      t.id === task.id ? { ...t, description: newDesc } : t
-                    ));
-                  }}
-                />
+                <div className="task-description">{task.description}</div>
               </div>
               <div 
                 className="task-menu-dots"
