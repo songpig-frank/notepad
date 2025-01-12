@@ -57,6 +57,7 @@ function VoiceRecorderScreen() {
   const [savedTranscriptions, setSavedTranscriptions] = React.useState([]);
   const [error, setError] = React.useState('');
   const [isLoading, setIsLoading] = React.useState(false);
+  const [modalData, setModalData] = React.useState({ isOpen: false, title: '', summary: '', transcription: '' });
 
   React.useEffect(() => {
     const fetchTranscriptions = async () => {
@@ -201,6 +202,7 @@ function VoiceRecorderScreen() {
       } finally {
         setIsLoading(false);
       }
+      setModalData({ isOpen: true, title: aiResult.title, summary: aiResult.summary, transcription: transcribedText });
     } catch (error) {
       console.error("Error generating title and summary:", error);
       setError("AI processing failed. Please try again.");
@@ -311,6 +313,13 @@ function VoiceRecorderScreen() {
           ))}
         </div>
       </div>
+      <AIResultModal 
+        isOpen={modalData.isOpen}
+        onClose={() => setModalData({ ...modalData, isOpen: false })}
+        title={modalData.title}
+        summary={modalData.summary}
+        transcription={modalData.transcription}
+      />
     </div>
   );
 }
@@ -497,6 +506,38 @@ export default function App() {
         <Route path="/task-list" element={<TaskListScreen />} />
       </Routes>
     </BrowserRouter>
+  );
+}
+
+function AIResultModal({ isOpen, onClose, title, summary, transcription }) {
+  if (!isOpen) return null;
+
+  const copyToClipboard = (text) => {
+    navigator.clipboard.writeText(text);
+  };
+
+  return (
+    <div className="modal-overlay">
+      <div className="modal-content">
+        <h2>AI Generated Results</h2>
+        <div className="modal-section">
+          <h3>Title</h3>
+          <p>{title}</p>
+          <button onClick={() => copyToClipboard(title)}>Copy Title</button>
+        </div>
+        <div className="modal-section">
+          <h3>Summary</h3>
+          <p>{summary}</p>
+          <button onClick={() => copyToClipboard(summary)}>Copy Summary</button>
+        </div>
+        <div className="modal-section">
+          <h3>Transcription</h3>
+          <p>{transcription}</p>
+          <button onClick={() => copyToClipboard(transcription)}>Copy Transcription</button>
+        </div>
+        <button className="close-button" onClick={onClose}>Close</button>
+      </div>
+    </div>
   );
 }
 
