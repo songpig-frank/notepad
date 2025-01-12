@@ -62,22 +62,32 @@ const getDeepSeekTitle = async (text) => {
 };
 
 export const generateTitleAndSummary = async (text) => {
+  if (!text?.trim()) {
+    throw new Error('No text provided');
+  }
+
   try {
-    const result = await getDeepSeekTitle(text);
-    if (result) return result;
+    if (config.deepseek.apiKey) {
+      const result = await getDeepSeekTitle(text);
+      if (result?.title) return result;
+    }
     
-    const openAIResult = await getOpenAITitle(text);
-    if (openAIResult) return openAIResult;
+    if (config.openai.apiKey) {
+      const openAIResult = await getOpenAITitle(text);
+      if (openAIResult?.title) return openAIResult;
+    }
     
+    if (!config.deepseek.apiKey && !config.openai.apiKey) {
+      throw new Error('No API keys configured. Please add API keys in Replit Secrets.');
+    }
+    
+    // Fallback if both APIs fail
     return {
       title: text.split('.')[0].substring(0, 50),
       summary: text.substring(0, 100)
     };
   } catch (error) {
     console.error('Error in AI service:', error);
-    return {
-      title: text.split('.')[0].substring(0, 50),
-      summary: text.substring(0, 100)
-    };
+    throw error;
   }
 };
