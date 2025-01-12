@@ -51,9 +51,10 @@ function HomeScreen() {
       <p className="subtitle">Capture, organize, and complete tasks with ADHD Pad</p>
       <button onClick={async () => {
         try {
+          const aiService = await import('./ai-service');
           const [openaiResult, deepseekResult] = await Promise.all([
-            import('./ai-service').then(module => module.testOpenAIConnection()),
-            import('./ai-service').then(module => module.testDeepSeekConnection())
+            aiService.testOpenAIConnection(),
+            aiService.testDeepSeekConnection()
           ]);
           
           const results = `AI Model Test Results\n` +

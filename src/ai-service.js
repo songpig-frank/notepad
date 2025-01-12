@@ -44,7 +44,7 @@ async function getOpenAITitle(text) {
   };
 }
 
-async function testDeepSeekConnection() {
+export async function testDeepSeekConnection() {
   try {
     const response = await fetch(config.deepseek.endpoint, {
       method: 'POST',
