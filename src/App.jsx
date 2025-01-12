@@ -49,8 +49,41 @@ function HomeScreen() {
       <div className="domain-name">ADHDPad.com</div>
       <h1 className="title">Turn Your Ideas into Action</h1>
       <p className="subtitle">Capture, organize, and complete tasks with ADHD Pad</p>
-      <button onClick={testOpenAI} className="test-ai-button">
-        Test OpenAI Connection
+      <button onClick={async () => {
+        try {
+          const [openaiResult, deepseekResult] = await Promise.all([
+            import('./ai-service').then(module => module.testOpenAIConnection()),
+            import('./ai-service').then(module => module.testDeepSeekConnection())
+          ]);
+          
+          const results = `AI Model Test Results\n` +
+            `------------------\n\n` +
+            `OpenAI:\n` +
+            `Status: ${openaiResult.success ? 'PASSED' : 'FAILED'}\n` +
+            `Model: ${openaiResult.model}\n` +
+            `Tokens Used: ${openaiResult.tokens.total} ` +
+            `(Prompt: ${openaiResult.tokens.prompt}, Completion: ${openaiResult.tokens.completion})\n` +
+            `Proverb: ${openaiResult.proverb}\n\n` +
+            `DeepSeek:\n` +
+            `Status: ${deepseekResult.success ? 'PASSED' : 'FAILED'}\n` +
+            `Model: ${deepseekResult.model}\n` +
+            `Tokens Used: ${deepseekResult.tokens.total} ` +
+            `(Prompt: ${deepseekResult.tokens.prompt}, Completion: ${deepseekResult.tokens.completion})\n` +
+            `Proverb: ${deepseekResult.proverb}`;
+
+          alert(results);
+          
+          try {
+            await navigator.clipboard.writeText(results);
+            alert('Results copied to clipboard!');
+          } catch (clipError) {
+            console.error('Clipboard access denied:', clipError);
+          }
+        } catch (error) {
+          alert(`Test Failed: ${error.message}`);
+        }
+      }} className="test-ai-button">
+        Test AI Model Connections
       </button>
       <div className="buttonContainer">
         <Link to="/voice-recorder" className="button">
