@@ -655,6 +655,11 @@ audio {
   padding: 8px;
   white-space: normal;
   word-wrap: break-word;
+  scroll-behavior: smooth;
+}
+
+.task-description:not(:hover):not(:focus-within) {
+  scrollTop: 0 !important;
 }
 
 .task-description.expanded {

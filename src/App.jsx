@@ -604,7 +604,10 @@ function TaskListScreen() {
                     }}
                   />
                 </div>
-                <div className="task-description">{task.description}</div>
+                <div 
+  className="task-description" 
+  onMouseLeave={(e) => e.target.scrollTop = 0}
+>{task.description}</div>
               </div>
               <div className="task-content">
                 <div className="task-id">ID: {task.julianId}</div>
