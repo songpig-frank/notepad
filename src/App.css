@@ -614,16 +614,16 @@ audio {
   padding: 8px;
   min-height: 70px;
   width: 100%;
-  white-space: pre-wrap;
-  overflow-wrap: break-word;
+  white-space: normal;
+  overflow-wrap: anywhere;
   word-break: break-word;
   resize: none;
   border: 1px solid transparent;
   border-radius: 4px;
   background: transparent;
-  height: auto;
+  max-height: none;
+  overflow: visible;
   display: block;
-  max-width: 100%;
   box-sizing: border-box;
 }
 
