@@ -447,11 +447,13 @@ function TaskListScreen() {
     return `${now.getFullYear()}${day.toString().padStart(3, '0')}${time}`;
   };
 
+  const [isProcessing, setIsProcessing] = React.useState(false);
+  
   const addTask = async (e) => {
     e.preventDefault();
     if (newTask.trim()) {
       try {
-        // Generate title and summary using AI
+        setIsProcessing(true);
         const aiResults = await generateTitleAndSummary(newTask);
         const title = aiResults.title || newTask.substring(0, 50);
         const description = aiResults.summary || newTask;
@@ -548,34 +550,84 @@ function TaskListScreen() {
         <div className="task-list">
           {filteredTasks.map(task => (
             <div key={task.id} className={`task-item ${task.completed ? 'completed' : ''} ${task.urgent ? 'urgent' : ''}`}>
-              <div className="task-header">
+              <div className="task-header-actions">
+                <button 
+                  onClick={() => {
+                    const taskDetails = `Task ID: ${task.julianId}\nTitle: ${task.title}\nDescription: ${task.description}`;
+                    navigator.clipboard.writeText(taskDetails);
+                  }}
+                >
+                  📋
+                </button>
+                <button 
+                  onClick={() => {
+                    const taskDetails = `Task ID: ${task.julianId}\nTitle: ${task.title}\nDescription: ${task.description}`;
+                    const mailtoLink = `mailto:?subject=Task Details - ${task.title}&body=${encodeURIComponent(taskDetails)}`;
+                    window.location.href = mailtoLink;
+                  }}
+                >
+                  📧
+                </button>
+              </div>
+              <div className="task-content">
                 <input
-                  type="checkbox"
-                  checked={task.completed}
-                  onChange={() => toggleTask(task.id)}
+                  type="text"
+                  className="task-title"
+                  value={task.title}
+                  onChange={async (e) => {
+                    const newTitle = e.target.value;
+                    const taskRef = doc(db, 'tasks', task.id);
+                    await updateDoc(taskRef, { title: newTitle });
+                    setTasks(tasks.map(t => 
+                      t.id === task.id ? { ...t, title: newTitle } : t
+                    ));
+                  }}
                 />
-                <div className="task-actions">
-                  <button 
-                    className="copy-button"
-                    onClick={() => {
-                      const taskDetails = `Task ID: ${task.julianId}\nTitle: ${task.title}\nDescription: ${task.description}\nStatus: ${task.completed ? 'Completed' : 'Pending'}\nUrgency: ${task.urgent ? 'Urgent' : 'Normal'}\nCreated: ${task.createdAt}`;
-                      navigator.clipboard.writeText(taskDetails);
-                      alert('Task details copied to clipboard!');
-                    }}
-                  >
-                    📋 Copy
+                <textarea
+                  className="task-description"
+                  value={task.description}
+                  onChange={async (e) => {
+                    const newDesc = e.target.value;
+                    const taskRef = doc(db, 'tasks', task.id);
+                    await updateDoc(taskRef, { description: newDesc });
+                    setTasks(tasks.map(t => 
+                      t.id === task.id ? { ...t, description: newDesc } : t
+                    ));
+                  }}
+                />
+              </div>
+              <div 
+                className="task-menu-dots"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setTasks(tasks.map(t => 
+                    t.id === task.id ? { ...t, menuOpen: !t.menuOpen } : { ...t, menuOpen: false }
+                  ));
+                }}
+              >
+                ⋮
+              </div>
+              {task.menuOpen && (
+                <div className="task-menu">
+                  <button onClick={() => toggleTask(task.id)}>
+                    {task.completed ? '↩️ Mark Incomplete' : '✓ Mark Complete'}
                   </button>
-                  <button 
-                    className="email-button"
-                    onClick={() => {
-                      const taskDetails = `Task ID: ${task.julianId}\nTitle: ${task.title}\nDescription: ${task.description}\nStatus: ${task.completed ? 'Completed' : 'Pending'}\nUrgency: ${task.urgent ? 'Urgent' : 'Normal'}\nCreated: ${task.createdAt}`;
-                      const mailtoLink = `mailto:?subject=Task Details - ${task.title}&body=${encodeURIComponent(taskDetails)}`;
-                      window.location.href = mailtoLink;
-                    }}
-                  >
-                    📧 Email
+                  <button onClick={async () => {
+                    const taskRef = doc(db, 'tasks', task.id);
+                    await updateDoc(taskRef, { urgent: !task.urgent });
+                    setTasks(tasks.map(t => 
+                      t.id === task.id ? { ...t, urgent: !t.urgent, menuOpen: false } : t
+                    ));
+                  }}>
+                    {task.urgent ? '📅 Remove Urgent' : '🚨 Mark Urgent'}
+                  </button>
+                  <button onClick={() => {
+                    deleteTask(task.id);
+                  }}>
+                    🗑️ Delete
                   </button>
                 </div>
+              )}
                 <div className="task-content">
                   <div className="task-id">ID: {task.julianId}</div>
                   <input
