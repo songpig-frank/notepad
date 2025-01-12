@@ -502,7 +502,7 @@ export default function App() {
 
 async function generateTitleAndSummary(text) {
   try {
-    const result = await generateTitleAndSummary(text);
+    const result = await import('./ai-service').then(module => module.generateTitleAndSummary(text));
     return result;
   } catch (error) {
     console.error('Error generating title and summary:', error);
