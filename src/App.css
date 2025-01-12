@@ -405,14 +405,14 @@ audio {
   position: relative;
   display: flex;
   flex-direction: column;
-  padding: 20px;
+  padding: 16px;
   background: white;
   border: 1px solid #eaeaea;
-  border-radius: 12px;
-  transition: all 0.3s ease;
-  margin-bottom: 16px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-  gap: 12px;
+  border-radius: 8px;
+  transition: all 0.2s ease;
+  margin-bottom: 12px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+  gap: 8px;
 }
 
 .task-item:hover {
@@ -463,18 +463,50 @@ audio {
 
 .task-menu {
   position: absolute;
-  top: 30px;
-  right: 10px;
+  top: 8px;
+  right: 32px;
   background: white;
-  border: 1px solid #eaeaea;
-  border-radius: 8px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-  min-width: 180px;
+  border: 1px solid #e0e0e0;
+  border-radius: 4px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  min-width: 160px;
   z-index: 1000;
-  padding: 8px 0;
+  padding: 4px 0;
   display: flex;
   flex-direction: column;
-  gap: 4px;
+}
+
+.task-menu button {
+  padding: 8px 12px;
+  text-align: left;
+  background: none;
+  border: none;
+  font-size: 14px;
+  color: #333;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.task-menu button:hover {
+  background-color: #f5f5f5;
+}
+
+.task-menu-dots {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  padding: 4px;
+  cursor: pointer;
+  border-radius: 4px;
+  transition: background 0.2s;
+  color: #666;
+}
+
+.task-menu-dots:hover {
+  background: #f5f5f5;
 }
 
 .task-menu button {

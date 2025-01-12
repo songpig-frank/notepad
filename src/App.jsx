@@ -412,6 +412,19 @@ function TaskListScreen() {
   const [tasks, setTasks] = React.useState([]);
   const [newTask, setNewTask] = React.useState('');
   const [searchQuery, setSearchQuery] = React.useState('');
+  
+  React.useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (!event.target.closest('.task-menu') && !event.target.closest('.task-menu-dots')) {
+        setTasks(currentTasks => 
+          currentTasks.map(task => ({ ...task, menuOpen: false }))
+        );
+      }
+    };
+
+    document.addEventListener('click', handleClickOutside);
+    return () => document.removeEventListener('click', handleClickOutside);
+  }, []);
   const [deleteConfirmation, setDeleteConfirmation] = React.useState({ show: false, taskId: null });
 
   const filteredTasks = tasks.filter(task => 
