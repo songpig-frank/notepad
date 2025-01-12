@@ -233,12 +233,11 @@ function VoiceRecorderScreen() {
     }
 
     try {
+      setIsLoading(true);
+      setError('');
       const aiResult = await generateTitleAndSummary(transcribedText);
       const title = aiResult?.title || transcribedText.split('.')[0];
       const description = aiResult?.summary || transcribedText.substring(0, 100);
-
-      setIsLoading(true);
-      setError('');
       try {
         if (!db) {
           throw new Error("Firebase database is not initialized");
@@ -357,11 +356,11 @@ function VoiceRecorderScreen() {
                 className="convert-task-button"
                 onClick={async () => {
                   try {
-                    const sentences = item.text.split(/[.!?]+/);
-                    const title = sentences[0].length > 50 ? 
-                      sentences[0].substring(0, 50) + '...' : 
-                      sentences[0];
-                    const description = sentences.slice(1).join('. ').trim() || title;
+                    const aiResult = await generateTitleAndSummary(item.text);
+                    const title = aiResult?.title || (item.text.split('.')[0].length > 50 ? 
+                      item.text.split('.')[0].substring(0, 50) + '...' : 
+                      item.text.split('.')[0]);
+                    const description = aiResult?.summary || item.text.substring(0, 100);
 
                     const newTask = {
                       title,
