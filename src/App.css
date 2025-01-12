@@ -619,7 +619,8 @@ audio {
   font-size: 16px;
   font-weight: 500;
   color: #2c3e50;
-  width: 100%;
+  width: 80%;
+  margin: 0 auto;
   line-height: 1.4;
   padding: 8px;
   min-height: 60px;
@@ -632,6 +633,7 @@ audio {
   text-align: left;
   padding-left: 16px;
   padding-right: 16px;
+  display: block;
 }
 
 .task-title {
