@@ -591,7 +591,7 @@ function TaskListScreen() {
                       />
                       <button 
                         className="email-button"
-                        onClick={async () => {
+                        onClick={() => {
                           if (!task.emailTo) {
                             alert('Please enter an email address');
                             return;
@@ -604,23 +604,8 @@ function TaskListScreen() {
                             `Created: ${task.createdAt}\n` +
                             `Last Modified: ${new Date().toLocaleString()}`;
                           
-                          try {
-                            await fetch('/api/send-email', {
-                              method: 'POST',
-                              headers: {
-                                'Content-Type': 'application/json',
-                              },
-                              body: JSON.stringify({
-                                to: task.emailTo,
-                                subject: `Task Details: ${task.title}`,
-                                text: taskText
-                              })
-                            });
-                            alert('Email sent successfully!');
-                          } catch (error) {
-                            console.error('Failed to send email:', error);
-                            alert('Failed to send email. Please try again.');
-                          }
+                          const mailtoLink = `mailto:${task.emailTo}?subject=${encodeURIComponent(`Task Details: ${task.title}`)}&body=${encodeURIComponent(taskText)}`;
+                          window.location.href = mailtoLink;
                         }}
                       >
                         📧 Email Task
