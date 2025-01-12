@@ -314,12 +314,42 @@ audio {
 
 .task-item {
   display: flex;
-  align-items: center;
+  flex-direction: column;
   gap: 10px;
-  padding: 10px;
+  padding: 15px;
   background: white;
   border: 1px solid #ddd;
   border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.task-item:hover {
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.task-header {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  width: 100%;
+}
+
+.task-full-text {
+  margin-top: 10px;
+  color: #666;
+  font-size: 0.9em;
+  white-space: pre-wrap;
+}
+
+.task-content {
+  flex: 1;
+  padding: 5px;
+  border-radius: 4px;
+}
+
+.task-content:hover {
+  background: #f8f9fa;
 }
 
 .task-item.completed .task-text {

@@ -425,17 +425,29 @@ function TaskListScreen() {
         </form>
         <div className="task-list">
           {filteredTasks.map(task => (
-            <div key={task.id} className={`task-item ${task.completed ? 'completed' : ''}`}>
-              <input
-                type="checkbox"
-                checked={task.completed}
-                onChange={() => toggleTask(task.id)}
-              />
-              <div className="task-content">
-                <h4 className="task-title">{task.title}</h4>
-                {task.description && <p className="task-description">{task.description}</p>}
+            <div key={task.id} className={`task-item ${task.completed ? 'completed' : ''} ${task.urgent ? 'urgent' : ''}`}>
+              <div className="task-header">
+                <input
+                  type="checkbox"
+                  checked={task.completed}
+                  onChange={() => toggleTask(task.id)}
+                />
+                <div className="task-content" onClick={() => {
+                  const updatedTasks = tasks.map(t => 
+                    t.id === task.id ? { ...t, expanded: !t.expanded } : t
+                  );
+                  setTasks(updatedTasks);
+                }}>
+                  <h4 className="task-title">{task.title}</h4>
+                  {task.expanded && (
+                    <>
+                      {task.description && <p className="task-description">{task.description}</p>}
+                      <p className="task-full-text">{task.text}</p>
+                      <small>{task.createdAt}</small>
+                    </>
+                  )}
+                </div>
               </div>
-              <small>{task.createdAt}</small>
               <button 
                 onClick={async () => {
                   const taskRef = doc(db, 'tasks', task.id);
