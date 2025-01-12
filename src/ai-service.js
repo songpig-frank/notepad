@@ -62,7 +62,22 @@ const getDeepSeekTitle = async (text) => {
 };
 
 export const generateTitleAndSummary = async (text) => {
-  const result = await getDeepSeekTitle(text);
-  if (result) return result;
-  return await getOpenAITitle(text);
+  try {
+    const result = await getDeepSeekTitle(text);
+    if (result) return result;
+    
+    const openAIResult = await getOpenAITitle(text);
+    if (openAIResult) return openAIResult;
+    
+    return {
+      title: text.split('.')[0].substring(0, 50),
+      summary: text.substring(0, 100)
+    };
+  } catch (error) {
+    console.error('Error in AI service:', error);
+    return {
+      title: text.split('.')[0].substring(0, 50),
+      summary: text.substring(0, 100)
+    };
+  }
 };
