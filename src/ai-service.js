@@ -1,17 +1,18 @@
 
+import { config } from './config';
+
 const getOpenAITitle = async (text) => {
-  const apiKey = process.env.OPENAI_API_KEY;
-  if (!apiKey) return null;
+  if (!config.openai.apiKey) return null;
   
   try {
-    const response = await fetch('https://api.openai.com/v1/chat/completions', {
+    const response = await fetch(config.openai.endpoint, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${apiKey}`
+        'Authorization': `Bearer ${config.openai.apiKey}`
       },
       body: JSON.stringify({
-        model: "gpt-3.5-turbo",
+        model: config.openai.model,
         messages: [{
           role: "system",
           content: "Create a concise title and brief summary for this text. Format as JSON with 'title' and 'summary' keys."
@@ -32,18 +33,17 @@ const getOpenAITitle = async (text) => {
 };
 
 const getDeepSeekTitle = async (text) => {
-  const apiKey = process.env.DEEPSEEK_API_KEY;
-  if (!apiKey) return null;
+  if (!config.deepseek.apiKey) return null;
 
   try {
-    const response = await fetch('https://api.deepseek.com/v1/chat/completions', {
+    const response = await fetch(config.deepseek.endpoint, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${apiKey}`
+        'Authorization': `Bearer ${config.deepseek.apiKey}`
       },
       body: JSON.stringify({
-        model: "deepseek-chat",
+        model: config.deepseek.model,
         messages: [{
           role: "system",
           content: "Create a concise title and brief summary for this text. Format as JSON with 'title' and 'summary' keys."
