@@ -632,7 +632,14 @@ audio {
 
 .task-title {
   font-size: 18px;
-  font-weight: 600;
+  font-weight: 400;
+  color: #4a4a4a;
+  width: 100%;
+  border: none;
+  background: transparent;
+  padding: 8px;
+  margin: 4px 0;
+  font-family: inherit;
   color: #333;
   margin-bottom: 12px;
   line-height: 1.4;
