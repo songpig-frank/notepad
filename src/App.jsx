@@ -512,28 +512,55 @@ export default function App() {
 function AIResultModal({ isOpen, onClose, title, summary, transcription }) {
   if (!isOpen) return null;
 
-  const copyToClipboard = (text) => {
-    navigator.clipboard.writeText(text);
+  const copyToClipboard = async (text, type) => {
+    try {
+      await navigator.clipboard.writeText(text);
+      alert(`${type} copied to clipboard!`);
+    } catch (err) {
+      console.error('Failed to copy:', err);
+      alert('Failed to copy to clipboard');
+    }
   };
 
   return (
-    <div className="modal-overlay">
-      <div className="modal-content">
-        <h2>AI Generated Results</h2>
+    <div className="modal-overlay" onClick={onClose}>
+      <div className="modal-content" onClick={e => e.stopPropagation()}>
+        <h2 className="modal-title">AI Generated Results</h2>
         <div className="modal-section">
-          <h3>Title</h3>
-          <p>{title}</p>
-          <button onClick={() => copyToClipboard(title)}>Copy Title</button>
+          <div className="section-header">
+            <h3>Generated Title</h3>
+            <button 
+              className="copy-button"
+              onClick={() => copyToClipboard(title, 'Title')}
+            >
+              Copy
+            </button>
+          </div>
+          <p className="result-text">{title}</p>
         </div>
         <div className="modal-section">
-          <h3>Summary</h3>
-          <p>{summary}</p>
-          <button onClick={() => copyToClipboard(summary)}>Copy Summary</button>
+          <div className="section-header">
+            <h3>AI Summary</h3>
+            <button 
+              className="copy-button"
+              onClick={() => copyToClipboard(summary, 'Summary')}
+            >
+              Copy
+            </button>
+          </div>
+          <p className="result-text">{summary}</p>
         </div>
         <div className="modal-section">
-          <h3>Transcription</h3>
-          <p>{transcription}</p>
-          <button onClick={() => copyToClipboard(transcription)}>Copy Transcription</button>
+          <div className="section-header">
+            <h3>Full Transcription</h3>
+            <button 
+              className="copy-button"
+              onClick={() => copyToClipboard(transcription, 'Transcription')}
+            >
+              Copy
+            </button>
+          </div>
+          <p className="result-text">{transcription}</p>
         </div>
         <button className="close-button" onClick={onClose}>Close</button>
       </div>
