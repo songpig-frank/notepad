@@ -240,6 +240,27 @@ function VoiceRecorderScreen() {
           >
             {isLoading ? 'Saving...' : 'Save Transcription'}
           </button>
+          <button 
+            className="button"
+            onClick={async () => {
+              if (!transcribedText.trim()) {
+                setError("Please record some text first");
+                return;
+              }
+              try {
+                setIsLoading(true);
+                const result = await generateTitleAndSummary(transcribedText);
+                alert(`Generated Title: ${result.title}\n\nSummary: ${result.summary}`);
+              } catch (error) {
+                setError("Failed to generate title and summary");
+              } finally {
+                setIsLoading(false);
+              }
+            }}
+            disabled={!transcribedText.trim() || isLoading}
+          >
+            Test AI Title Generation
+          </button>
         </div>
         <div className="saved-transcriptions">
           <h3>Saved Transcriptions</h3>
