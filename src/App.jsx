@@ -555,64 +555,47 @@ function TaskListScreen() {
                   checked={task.completed}
                   onChange={() => toggleTask(task.id)}
                 />
-                {task.completed && (
-                  <div className="task-actions">
+                <div className="task-actions">
+                  <button 
+                    className="copy-button"
+                    onClick={() => {
+                      const taskText = `Task ID: ${task.julianId}\nTitle: ${task.title}\nDescription: ${task.description}\nStatus: ${task.completed ? 'Completed' : 'Pending'}\nCreated: ${task.createdAt}`;
+                      navigator.clipboard.writeText(taskText)
+                        .then(() => alert('Task copied!'))
+                        .catch(err => console.error('Failed to copy:', err));
+                    }}
+                  >
+                    📋 Copy
+                  </button>
+                  <div className="email-container">
+                    <input
+                      type="email"
+                      placeholder="Enter email"
+                      value={task.emailTo || ''}
+                      onChange={async (e) => {
+                        const taskRef = doc(db, 'tasks', task.id);
+                        await updateDoc(taskRef, { emailTo: e.target.value });
+                        setTasks(tasks.map(t => 
+                          t.id === task.id ? { ...t, emailTo: e.target.value } : t
+                        ));
+                      }}
+                    />
                     <button 
-                      className="copy-complete-button"
+                      className="email-button"
                       onClick={() => {
-                        const taskText = `Task ID: ${task.julianId}\n` +
-                          `Title: ${task.title}\n` +
-                          `Description: ${task.description}\n` +
-                          `Status: ${task.completed ? 'Completed' : 'Pending'}\n` +
-                          `Urgency: ${task.urgent ? 'Urgent' : 'Normal'}\n` +
-                          `Created: ${task.createdAt}\n` +
-                          `Last Modified: ${new Date().toLocaleString()}`;
-                        navigator.clipboard.writeText(taskText)
-                          .then(() => alert('Task details copied!'))
-                          .catch(err => console.error('Failed to copy:', err));
+                        if (!task.emailTo) {
+                          alert('Please enter an email address');
+                          return;
+                        }
+                        const taskText = `Task ID: ${task.julianId}\nTitle: ${task.title}\nDescription: ${task.description}\nStatus: ${task.completed ? 'Completed' : 'Pending'}\nCreated: ${task.createdAt}`;
+                        const mailtoLink = `mailto:${task.emailTo}?subject=${encodeURIComponent('Task Details')}&body=${encodeURIComponent(taskText)}`;
+                        window.location.href = mailtoLink;
                       }}
                     >
-                      📋 Copy Task Details
+                      📧 Email
                     </button>
-                    <div className="email-action">
-                      <input
-                        type="email"
-                        placeholder="Enter email"
-                        className="email-input"
-                        value={task.emailTo || ''}
-                        onChange={async (e) => {
-                          const newEmail = e.target.value;
-                          const taskRef = doc(db, 'tasks', task.id);
-                          await updateDoc(taskRef, { emailTo: newEmail });
-                          setTasks(tasks.map(t => 
-                            t.id === task.id ? { ...t, emailTo: newEmail } : t
-                          ));
-                        }}
-                      />
-                      <button 
-                        className="email-button"
-                        onClick={() => {
-                          if (!task.emailTo) {
-                            alert('Please enter an email address');
-                            return;
-                          }
-                          const taskText = `Task ID: ${task.julianId}\n` +
-                            `Title: ${task.title}\n` +
-                            `Description: ${task.description}\n` +
-                            `Status: ${task.completed ? 'Completed' : 'Pending'}\n` +
-                            `Urgency: ${task.urgent ? 'Urgent' : 'Normal'}\n` +
-                            `Created: ${task.createdAt}\n` +
-                            `Last Modified: ${new Date().toLocaleString()}`;
-                          
-                          const mailtoLink = `mailto:${task.emailTo}?subject=${encodeURIComponent(`Task Details: ${task.title}`)}&body=${encodeURIComponent(taskText)}`;
-                          window.location.href = mailtoLink;
-                        }}
-                      >
-                        📧 Email Task
-                      </button>
-                    </div>
                   </div>
-                )}
+                </div>
                 <div className="task-content">
                   <div className="task-id">{task.julianId}</div>
                   <input

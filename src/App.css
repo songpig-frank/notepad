@@ -403,7 +403,7 @@ audio {
 
 .task-item {
   display: flex;
-  flex-direction: column;
+  flex-direction: row; /* Changed to row to accommodate actions */
   gap: 10px;
   padding: 15px;
   background: white;
@@ -432,31 +432,54 @@ audio {
 }
 
 .task-content {
-  flex: 1;
-  padding: 5px;
+  margin-left: 10px;
+  flex-grow: 1;
+}
+
+.task-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 0 10px;
+}
+
+.copy-button,
+.email-button {
+  padding: 5px 10px;
+  border: none;
   border-radius: 4px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.9em;
 }
 
-.task-content:hover {
-  background: #f8f9fa;
+.copy-button {
+  background: #4CAF50;
+  color: white;
 }
 
-.task-item.completed .task-text {
-  text-decoration: line-through;
-  color: #666;
+.email-button {
+  background: #2196F3;
+  color: white;
 }
 
-.task-content {
-  flex: 1;
+.email-container {
+  display: flex;
+  align-items: center;
+  gap: 5px;
 }
 
-.task-id {
-  font-size: 0.8em;
-  color: #666;
-  margin-bottom: 5px;
+.email-container input {
+  padding: 5px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 0.9em;
 }
 
-.task-title-input {
+
+.task-item .task-title-input {
   width: 100%;
   margin: 0;
   font-size: 1.1em;
@@ -466,14 +489,15 @@ audio {
   border-radius: 4px;
 }
 
-.task-title-input:hover,
-.task-title-input:focus {
+.task-item .task-title-input:hover,
+.task-item .task-title-input:focus {
   border-color: #ddd;
   outline: none;
 }
 
-.task-description-input,
-.task-full-text-input {
+
+.task-item .task-description-input,
+.task-item .task-full-text-input {
   width: 100%;
   margin: 5px 0;
   font-size: 0.9em;
@@ -483,6 +507,12 @@ audio {
   border-radius: 4px;
   min-height: 60px;
   resize: vertical;
+}
+
+.task-id {
+  font-size: 0.8em;
+  color: #666;
+  margin-bottom: 5px;
 }
 
 .expand-button {
