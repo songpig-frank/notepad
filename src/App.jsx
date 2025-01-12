@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { BrowserRouter, Routes, Route, Link } from 'react-router-dom';
 import logo from './logo.svg';
@@ -27,23 +26,23 @@ function HomeScreen() {
 
 function VoiceRecorderScreen() {
   const [isRecording, setIsRecording] = React.useState(false);
-  
+
   const clearAll = async () => {
     if (window.confirm('Are you sure you want to delete all transcriptions and tasks? This cannot be undone.')) {
       try {
         const transcriptionsSnapshot = await getDocs(collection(db, 'transcriptions'));
         const tasksSnapshot = await getDocs(collection(db, 'tasks'));
-        
+
         // Delete all transcriptions
         const transcriptionDeletes = transcriptionsSnapshot.docs.map(doc => 
           deleteDoc(doc.ref)
         );
-        
+
         // Delete all tasks
         const taskDeletes = tasksSnapshot.docs.map(doc => 
           deleteDoc(doc.ref)
         );
-        
+
         await Promise.all([...transcriptionDeletes, ...taskDeletes]);
         setSavedTranscriptions([]);
         alert('All transcriptions and tasks have been cleared!');
@@ -158,56 +157,53 @@ function VoiceRecorderScreen() {
       return;
     }
 
-    setIsLoading(true);
-    setError('');
     try {
-      if (!db) {
-        throw new Error("Firebase database is not initialized");
+      const aiResult = await generateTitleAndSummary(transcribedText);
+      const title = aiResult?.title || transcribedText.split('.')[0];
+      const description = aiResult?.summary || transcribedText.substring(0, 100);
+
+      setIsLoading(true);
+      setError('');
+      try {
+        if (!db) {
+          throw new Error("Firebase database is not initialized");
+        }
+
+        const transcriptionsRef = collection(db, 'transcriptions');
+        const docRef = await addDoc(transcriptionsRef, {
+          title,
+          description,
+          text: transcribedText,
+          timestamp: new Date().toLocaleString(),
+          createdAt: new Date()
+        });
+
+        const newTranscription = {
+          id: docRef.id,
+          title,
+          description,
+          text: transcribedText,
+          timestamp: new Date().toLocaleString()
+        };
+
+        setSavedTranscriptions(prev => [...prev, newTranscription]);
+        setTranscribedText('');
+        setAudioURL('');
+
+        if (isRecording) {
+          stopRecording();
+        }
+
+        alert("Transcription saved successfully!");
+      } catch (error) {
+        console.error("Error saving transcription:", error);
+        setError(`Failed to save: ${error.message}`);
+      } finally {
+        setIsLoading(false);
       }
-
-      const transcriptionsRef = collection(db, 'transcriptions');
-      // Extract title (first sentence or first X words)
-      const sentences = transcribedText.split(/[.!?]+/);
-      const firstSentence = sentences[0].trim();
-      const title = firstSentence.length > 50 ? 
-        firstSentence.split(' ').slice(0, 5).join(' ') + '...' : 
-        firstSentence;
-
-      // Extract description (next few sentences or remaining text)
-      const description = sentences.slice(1, 3)
-        .join('. ')
-        .trim() || firstSentence;
-
-      const docRef = await addDoc(transcriptionsRef, {
-        title,
-        description,
-        text: transcribedText,
-        timestamp: new Date().toLocaleString(),
-        createdAt: new Date()
-      });
-
-      const newTranscription = {
-        id: docRef.id,
-        title,
-        description,
-        text: transcribedText,
-        timestamp: new Date().toLocaleString()
-      };
-
-      setSavedTranscriptions(prev => [...prev, newTranscription]);
-      setTranscribedText('');
-      setAudioURL('');
-      
-      if (isRecording) {
-        stopRecording();
-      }
-
-      alert("Transcription saved successfully!");
     } catch (error) {
-      console.error("Error saving transcription:", error);
-      setError(`Failed to save: ${error.message}`);
-    } finally {
-      setIsLoading(false);
+      console.error("Error generating title and summary:", error);
+      setError("AI processing failed. Please try again.");
     }
   };
 
@@ -273,7 +269,7 @@ function VoiceRecorderScreen() {
                     // Delete from transcriptions first
                     const transcriptionsRef = collection(db, 'transcriptions');
                     await deleteDoc(doc(transcriptionsRef, item.id));
-                    
+
                     // Update local state immediately
                     setSavedTranscriptions(prevTranscriptions => 
                       prevTranscriptions.filter(t => t.id !== item.id)
@@ -302,7 +298,7 @@ function TaskListScreen() {
   const [tasks, setTasks] = React.useState([]);
   const [newTask, setNewTask] = React.useState('');
   const [searchQuery, setSearchQuery] = React.useState('');
-  
+
   const filteredTasks = tasks.filter(task => 
     task.text?.toLowerCase().includes(searchQuery.toLowerCase()) ||
     task.title?.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -334,7 +330,7 @@ function TaskListScreen() {
           sentences[0].substring(0, 50) + '...' : 
           sentences[0];
         const description = sentences.slice(1).join('. ').trim() || title;
-        
+
         const taskRef = await addDoc(collection(db, 'tasks'), {
           title,
           description,
@@ -343,7 +339,7 @@ function TaskListScreen() {
           urgent: false,
           createdAt: new Date().toLocaleString()
         });
-        
+
         setTasks([...tasks, {
           id: taskRef.id,
           title,
@@ -481,4 +477,18 @@ export default function App() {
       </Routes>
     </BrowserRouter>
   );
+}
+
+async function generateTitleAndSummary(text) {
+  // Implement your AI title and summary generation logic here using OpenAI or DeepSeek API
+  // Replace this with actual API calls and error handling
+
+  // Example using a placeholder:
+  await new Promise(resolve => setTimeout(resolve, 500)); // Simulate API call delay
+
+  return {
+    title: `AI-Generated Title: ${text.split('.')[0]}`,
+    summary: `AI-Generated Summary: ${text.substring(0, 100)}`
+  };
+
 }
