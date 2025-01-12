@@ -68,7 +68,13 @@ export async function testOpenAIConnection() {
     return {
       success: response.ok,
       proverb: data.choices?.[0]?.message?.content || 'No proverb available',
-      error: response.ok ? null : (data.error?.message || 'API request failed')
+      error: response.ok ? null : (data.error?.message || 'API request failed'),
+      model: data.model || 'gpt-3.5-turbo',
+      tokens: {
+        total: data.usage?.total_tokens || 0,
+        prompt: data.usage?.prompt_tokens || 0,
+        completion: data.usage?.completion_tokens || 0
+      }
     };
   } catch (error) {
     return {

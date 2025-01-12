@@ -14,7 +14,13 @@ function HomeScreen() {
       setOpenAIStatus(result);
       
       if (result.success) {
-        alert(`Connection Successful!\nProverb: ${result.proverb}`);
+        alert(
+          `Connection Successful!\n\n` +
+          `Model: ${result.model}\n` +
+          `Tokens Used: ${result.tokens.total}\n` +
+          `(Prompt: ${result.tokens.prompt}, Completion: ${result.tokens.completion})\n\n` +
+          `Proverb: ${result.proverb}`
+        );
       } else {
         const errorMessage = `Connection Failed!\nError: ${result.error}`;
         alert(errorMessage);
