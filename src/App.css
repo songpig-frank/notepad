@@ -441,20 +441,27 @@ audio {
 
 .task-header-actions {
   position: absolute;
-  top: 12px;
+  bottom: 12px;
   right: 12px;
   display: flex;
   gap: 8px;
-  opacity: 0.6;
+  z-index: 10;
 }
 
 .task-header-actions button {
-  padding: 4px 8px;
-  font-size: 12px;
-  background: transparent;
-  border: none;
+  padding: 6px 10px;
+  font-size: 16px;
+  background: #f5f5f5;
+  border: 1px solid #ddd;
+  border-radius: 4px;
   cursor: pointer;
-  color: #666;
+  color: #333;
+  transition: all 0.2s ease;
+}
+
+.task-header-actions button:hover {
+  background: #e0e0e0;
+  transform: translateY(-1px);
 }
 
 .task-header-actions button:hover {
