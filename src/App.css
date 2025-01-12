@@ -636,44 +636,7 @@ audio {
   display: block;
 }
 
-.task-title {
-  font-size: 18px;
-  font-weight: 400;
-  color: #4a4a4a;
-  width: 100%;
-  border: none;
-  background: transparent;
-  padding: 8px;
-  margin: 4px 0;
-  font-family: inherit;
-  color: #333;
-  margin-bottom: 12px;
-  line-height: 1.4;
-  padding: 8px;
-  min-height: 70px;
-  width: 100%;
-  white-space: normal;
-  word-wrap: break-word;
-  overflow-wrap: break-word;
-  word-break: break-word;
-  hyphens: auto;
-  resize: none;
-  border: 1px solid transparent;
-  border-radius: 4px;
-  background: transparent;
-  display: block;
-  box-sizing: border-box;
-  max-width: 100%;
-  overflow: visible;
-  text-align: center;
-}
 
-.task-title:hover,
-.task-title:focus {
-  border-color: #ddd;
-  background: #fff;
-  outline: none;
-}
 
 .task-description {
   font-size: 14px;
