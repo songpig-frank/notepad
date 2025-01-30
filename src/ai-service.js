@@ -194,3 +194,68 @@ export async function generateTitleAndSummary(text) {
 
   throw new Error('All AI services failed');
 }
+import { config } from './config';
+
+async function makeAPICall(endpoint, apiKey, prompt, model) {
+  const response = await fetch(endpoint, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${apiKey}`
+    },
+    body: JSON.stringify({
+      model: model,
+      messages: [{ role: 'user', content: prompt }]
+    })
+  });
+
+  return await response.json();
+}
+
+export async function testOpenAIConnection() {
+  try {
+    const result = await makeAPICall(
+      config.openai.endpoint,
+      config.openai.apiKey,
+      'Share a short proverb about wisdom',
+      config.openai.model
+    );
+    
+    return {
+      success: true,
+      model: config.openai.model,
+      tokens: {
+        prompt: result.usage.prompt_tokens,
+        completion: result.usage.completion_tokens,
+        total: result.usage.total_tokens
+      },
+      proverb: result.choices[0].message.content
+    };
+  } catch (error) {
+    return { success: false, error: error.message };
+  }
+}
+
+export async function testDeepSeekConnection() {
+  try {
+    const result = await makeAPICall(
+      config.deepseek.endpoint,
+      config.deepseek.apiKey,
+      'Share a short proverb about wisdom',
+      config.deepseek.model
+    );
+    
+    return {
+      success: true,
+      model: config.deepseek.model,
+      tokens: {
+        prompt: result.usage.prompt_tokens,
+        completion: result.usage.completion_tokens,
+        total: result.usage.total_tokens
+      },
+      proverb: result.choices[0].message.content
+    };
+  } catch (error) {
+    return { success: false, error: error.message };
+  }
+}
