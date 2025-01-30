@@ -1,48 +1,42 @@
 
 # ADHD Pad - Voice-to-Task Application
 
-A React-based application that helps ADHD individuals capture and organize their thoughts efficiently through voice recording and AI-powered task management.
+A React-based voice-to-task application for ADHD individuals using AI-powered task management.
 
-## Features
+## Required Versions
+- Node.js: 18.20.5
+- npm: 10.8.2
+- React: 18.2.0
+- Firebase: 11.1.0
+- React Router DOM: 6.20.0
+- Vite: 5.0.0
+- TypeScript: 5.2.2
 
-- Voice-to-text task creation
-- Firebase integration for data persistence
-- AI-powered task analysis using OpenAI and DeepSeek
-- Real-time updates and task management
-- Responsive design for web and mobile
-
-## Prerequisites
-
-- Node.js 18.x or higher
-- npm 9.x or higher
-- A Replit account
-- Firebase account
-- OpenAI API key
-- DeepSeek API key
-
-## Quick Start
+## Setup
 
 1. Fork this Repl
-2. Set up environment variables in Replit Secrets
+2. Set up environment variables in Replit Secrets:
+   ```
+   VITE_FIREBASE_API_KEY
+   VITE_FIREBASE_AUTH_DOMAIN
+   VITE_FIREBASE_PROJECT_ID
+   VITE_FIREBASE_STORAGE_BUCKET
+   VITE_FIREBASE_MESSAGING_SENDER_ID
+   VITE_FIREBASE_APP_ID
+   VITE_OPENAI_API_KEY
+   VITE_DEEPSEEK_API_KEY
+   ```
 3. Click Run to start the development server
 
-## Environment Variables
+## Features
+- Voice-to-text task creation with speech recognition
+- Firebase Firestore for data storage
+- OpenAI and DeepSeek AI integration
+- Real-time task management
+- Responsive web interface
 
-See `.env.example` for required environment variables.
+## Development
+The app runs on port 5173 with Vite's development server.
 
-## Documentation
-
-- `run_build.md` - Detailed build and deployment instructions
-- `CONTRIBUTING.md` - Guidelines for contributing to the project
-
-## Tech Stack
-
-- React 18.2.0
-- Firebase 11.1.0
-- Vite 5.0.0
-- TypeScript 5.2.2
-- React Router DOM 7.1.1
-
-## License
-
-ISC License
+## Deployment
+Use Replit's built-in deployment feature for hosting.
